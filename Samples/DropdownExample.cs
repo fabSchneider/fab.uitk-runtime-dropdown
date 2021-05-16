@@ -41,6 +41,7 @@ namespace Fab.UI.Samples
             btnMenu.AppendAction("DisabledAction", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
             btnMenu.AppendSeparator();
             btnMenu.AppendAction("Sub Menu/Action 4", DoMenuAction);
+            btnMenu.AppendSeparator("Sub Menu/");
             btnMenu.AppendAction("Sub Menu/Action 5", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 6", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 7", DoMenuAction);

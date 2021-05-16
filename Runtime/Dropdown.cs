@@ -337,7 +337,7 @@ namespace Fab.UI
             public void AddItem(DropdownMenuItem item, string[] path, int level)
             {
                 //leaf item
-                if (level == path.Length - 1)
+                if (level == path.Length - 1 || path.Length == 0)
                 {
                     if (item is DropdownMenuAction action)
                     {
@@ -350,7 +350,9 @@ namespace Fab.UI
                     }
                     else
                     {
-                        seperators.Add(dropdown.seperatorPool.GetPooled());
+                        var seperator = dropdown.seperatorPool.GetPooled();
+                        seperators.Add(seperator);
+                        menuContainer.Add(seperator);
                     }
                 }
                 //create submenu item

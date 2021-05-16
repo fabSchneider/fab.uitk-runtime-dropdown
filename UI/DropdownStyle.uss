@@ -95,5 +95,5 @@
 
 .fab-dropdown__seperator__line {
     height: 1px;
-    background-color: rgb(103, 103, 103);
+    background-color: rgb(230, 230, 230);
 }
