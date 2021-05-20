@@ -43,6 +43,7 @@
 }
 
 .fab-dropdown__item--hidden {
+    display: none;
 }
 
 .fab-dropdown__item--disabled {
