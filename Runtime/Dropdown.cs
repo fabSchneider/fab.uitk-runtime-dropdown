@@ -97,6 +97,7 @@ namespace Fab.UI
             protected virtual void OnMouseUp(MouseUpEvent evt)
             {
                 evt.StopPropagation();
+                target.Blur();
                 ExecuteIfEnabled();
             }
 
