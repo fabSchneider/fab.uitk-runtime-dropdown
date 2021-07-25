@@ -45,6 +45,8 @@ namespace Fab.UI.Samples
             btnMenu.AppendAction("Sub Menu/Action 5", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 6", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 7", DoMenuAction);
+            btnMenu.AppendAction("DisabledSubMenu/Disabled", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
+            btnMenu.AppendAction("DisabledSubMenu/Hidden", DoMenuAction, DropdownMenuAction.Status.Hidden);
             btnMenu.AppendAction("Deep/Nested/Menu/That/Would/Annoy/Anyone/That/Has/To/Click/Through/It/But/Atleast/It/Wraps/Around/Nicely/When/It/Reaches/The/End/Of/The/Screen", DoMenuAction);
 
             var btn = root.Q<Button>(name: "dropdown-btn");

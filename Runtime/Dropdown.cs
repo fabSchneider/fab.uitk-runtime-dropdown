@@ -36,13 +36,19 @@ namespace Fab.UI
 
             protected ItemManipulator() { }
 
-            protected bool enabled;
+            private bool enabled;
+
+            public bool Enabled
+            {
+                get => enabled;
+                protected set => enabled = value;
+            }
 
             public abstract void Reset();
 
             protected void ExecuteIfEnabled()
             {
-                if (enabled)
+                if (Enabled)
                     ExecuteAction();
             }
 
@@ -119,14 +125,14 @@ namespace Fab.UI
             {
                 this.action = action;
                 this.menu = menu;
-                this.enabled = enabled;
+                this.Enabled = enabled;
             }
 
             public override void Reset()
             {
                 menu = null;
                 action = null;
-                enabled = false;
+                Enabled = false;
             }
 
             protected override void ExecuteAction()
@@ -145,14 +151,14 @@ namespace Fab.UI
             {
                 this.menu = menu;
                 this.subMenu = subMenu;
-                this.enabled = enabled;
+                this.Enabled = enabled;
             }
 
             public override void Reset()
             {
                 menu = null;
                 subMenu = null;
-                enabled = false;
+                Enabled = false;
             }
 
             protected override void Activate()
@@ -176,6 +182,18 @@ namespace Fab.UI
             protected override void OnLeave(PointerLeaveEvent evt)
             {
                 base.OnLeave(evt);
+            }
+            
+            public void SetEnabled()
+            {
+                Enabled = true;
+                target.RemoveFromClassList(disabledItemClassname);
+            }
+
+            public void SetDisabled()
+            {
+                Enabled = false;
+                target.AddToClassList(disabledItemClassname);
             }
         }
 
@@ -280,19 +298,18 @@ namespace Fab.UI
                 var worldRect = dropdown.root.WorldToLocal(target.worldBound);
                 var localRect = target.localBound;//parentMenu.WorldToLocal(target.worldBound);
 
-
                 //right align menu if it exceeds root's bounds
-                if (worldRect.xMax 
+                if (worldRect.xMax
                     + parentMenu.menuContainer.resolvedStyle.borderRightWidth
-                    + dropdown.subMenuOffset 
+                    + dropdown.subMenuOffset
                     + measuredWidth > dropdown.root.resolvedStyle.width)
                     style.right = measuredWidth + dropdown.subMenuOffset - parentMenu.menuContainer.resolvedStyle.borderLeftWidth;
                 else
                     style.left = localRect.xMax + dropdown.subMenuOffset;
 
                 //subtract border width to the top to align items
-                style.top = localRect.yMin 
-                    - parentMenu.menuContainer.resolvedStyle.borderTopWidth 
+                style.top = localRect.yMin
+                    - parentMenu.menuContainer.resolvedStyle.borderTopWidth
                     - parentMenu.menuContainer.resolvedStyle.paddingTop;
             }
 
@@ -343,7 +360,9 @@ namespace Fab.UI
                     if (item is DropdownMenuAction action)
                     {
                         var m = dropdown.actionItemPool.GetPooled();
-                        m.Set(action.Execute, this, action.status != DropdownMenuAction.Status.Disabled);
+                        m.Set(action.Execute, this,
+                            action.status != DropdownMenuAction.Status.Disabled &&
+                            action.status != DropdownMenuAction.Status.Hidden);
                         dropdown.SetItem(m.target, item, path, level);
                         dropdown.SetItemStatus(m.target, action.status);
                         actionItems.Add(m);
@@ -372,7 +391,7 @@ namespace Fab.UI
                         subMenus.Add(path[level], subMenu);
                         subItems.Add(m);
                     }
-                    //add menu intially so its style is resolved
+                    //add menu initially so its style is resolved
                     Add(subMenu);
                     subMenu.AddItem(item, path, level + 1);
                 }
@@ -399,6 +418,34 @@ namespace Fab.UI
                     submenu.DetachAll();
 
                 RemoveFromHierarchy();
+            }
+
+            public bool UpdateSubItemsEnabledState()
+            {
+                bool hasEnabledItems = false;
+                foreach (var item in actionItems)
+                {
+                    if (item.Enabled)
+                    {
+                        hasEnabledItems = true;
+                        break;
+                    }
+                }
+
+                foreach (var subItem in subItems)
+                {
+                    if (subItem.subMenu.UpdateSubItemsEnabledState())
+                    {
+                        hasEnabledItems = true;
+                        subItem.SetEnabled();
+                    }
+                    else
+                    {
+                        subItem.SetDisabled();
+                    }
+                }
+
+                return hasEnabledItems;
             }
         }
 
@@ -515,6 +562,8 @@ namespace Fab.UI
                 else if (item is DropdownMenuAction a)
                     rootMenu.AddItem(item, a.name.Split('/'), 0);
             }
+
+            rootMenu.UpdateSubItemsEnabledState();
         }
 
         private void OnBuildComplete(GeometryChangedEvent evt)
@@ -602,7 +651,7 @@ namespace Fab.UI
 
         private void SetDefaultItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
         {
-            ve.Q<Label>(name : "text").text = path[level];
+            ve.Q<Label>(name: "text").text = path[level];
         }
 
         private VisualElement MakeDefaultSeperator()
