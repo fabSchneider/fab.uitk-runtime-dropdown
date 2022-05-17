@@ -68,7 +68,7 @@ namespace Fab.UI.Samples
             hotkeyText.style.marginLeft = 24f;
             ve.Add(hotkeyText);
 
-            //submenu arrow
+            //sub-menu arrow
             ve.Add(new VisualElement()
                 .WithClass(Dropdown.itemArrowClassname)
                 .WithName("arrow"));

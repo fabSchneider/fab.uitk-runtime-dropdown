@@ -196,7 +196,6 @@ namespace Fab.UI
                 target.AddToClassList(disabledItemClassname);
             }
         }
-
         private class Menu : VisualElement
         {
             public readonly Dropdown dropdown;
@@ -255,7 +254,7 @@ namespace Fab.UI
                     dropdown.subItemPool.ReturnToPool(item);
                 }
 
-                //return seperators to pool
+                //return separators to pool
                 for (int i = 0; i < seperators.Count; i++)
                 {
                     var seperator = seperators[i];
@@ -263,7 +262,7 @@ namespace Fab.UI
                     dropdown.seperatorPool.ReturnToPool(seperator);
                 }
 
-                //close all submenus
+                //close all sub-menus
                 CloseSubMenus();
 
                 //return sub menus to pool
@@ -375,12 +374,12 @@ namespace Fab.UI
                         menuContainer.Add(seperator);
                     }
                 }
-                //create submenu item
+                //create sub-menu item
                 else
                 {
                     if (!subMenus.TryGetValue(path[level], out Menu subMenu))
                     {
-                        //create new submenu if it has not been created yet
+                        //create new sub-menu if it has not been created yet
                         var m = dropdown.subItemPool.GetPooled();
                         subMenu = dropdown.subMenuPool.GetPooled();
                         subMenu.Set(this, m.target);
@@ -467,12 +466,12 @@ namespace Fab.UI
         protected long openSubMenuDelay = 200;
 
         /// <summary>
-        /// Constructs the dropdown
+        /// Constructs the drop-down
         /// </summary>
-        /// <param name="root">The root Element the dropdown will attach to</param>
+        /// <param name="root">The root Element the drop-down will attach to</param>
         /// <param name="makeItem">Optional function to customize item appearance</param>
         /// <param name="setItem">Optional function to customize how item displays its content</param>
-        /// <param name="makeSeperator">Optional function to customize the seperator appearance</param>
+        /// <param name="makeSeperator">Optional function to customize the separator appearance</param>
         public Dropdown(VisualElement root,
             Func<VisualElement> makeItem = null,
             Action<VisualElement, DropdownMenuItem, string[], int> setItem = null,
@@ -509,7 +508,7 @@ namespace Fab.UI
         }
 
         /// <summary>
-        /// Opens a dropdown anchored to the bottom border of the target rect
+        /// Opens a drop-down anchored to the bottom border of the target rect
         /// </summary>
         /// <param name="menu"></param>
         /// <param name="target"></param>
@@ -531,7 +530,7 @@ namespace Fab.UI
         }
 
         /// <summary>
-        /// Opens a dropdown at the given world position
+        /// Opens a drop-down at the given world position
         /// </summary>
         /// <param name="menu"></param>
         /// <param name="position"></param>
@@ -541,7 +540,7 @@ namespace Fab.UI
         }
 
         /// <summary>
-        /// Closes the currently open dropdown
+        /// Closes the currently open drop-down
         /// </summary>
         public void Close()
         {
