@@ -1,0 +1,16 @@
+{
+    "name": "Fab.UITKDropdown.Sample",
+    "rootNamespace": "Fab.UITKDropdown.Sample",
+    "references": [
+        "GUID:19548729441426b4b97d4c946cc50455"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

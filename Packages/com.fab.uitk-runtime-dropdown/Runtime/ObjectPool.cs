@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Fab
+namespace Fab.UITKDropdown
 {
     public class PoolExhaustedException : Exception
     {

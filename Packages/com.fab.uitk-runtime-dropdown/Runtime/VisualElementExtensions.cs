@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Fab.UI
+namespace Fab.UITKDropdown
 {
     public static class VisualElementExtensions
     {

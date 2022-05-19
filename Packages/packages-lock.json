@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.fab.uitk-runtime-dropdown": {
+      "version": "file:com.fab.uitk-runtime-dropdown",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.collab-proxy": {
       "version": "1.15.16",
       "depth": 0,

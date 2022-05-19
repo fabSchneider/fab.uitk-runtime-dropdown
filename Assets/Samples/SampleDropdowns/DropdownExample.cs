@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Fab.UI.Samples
+namespace Fab.UITKDropdown.Sample
 {
     [Flags]
     public enum ExampleOptions
