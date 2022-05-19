@@ -1,0 +1,19 @@
+{
+  "name": "com.fab.uitk-runtime-dropdown",
+  "version": "1.0.0",
+  "displayName": "UITK Runtime Dropdown",
+  "description": "A runtime dropdown for Unity's UI Toolkit",
+  "unity": "2021.3",
+  "unityRelease": "2f1",
+  "keywords": ["UIToolkit", "Dropdown", "UI"],
+  "author": {
+    "name": "Fabian Schneider"
+  },
+  "samples": [
+    {
+      "displayName": "Sample dropdowns",
+      "description": "Several sample dropdows",
+      "path": "Samples~/SampleDropdowns"
+    }
+  ]
+}
