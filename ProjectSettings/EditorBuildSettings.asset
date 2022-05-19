@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Assets/Samples/DropdownSample.unity
+    path: Assets/Samples/DropdownSample.unity
     guid: a9c2d79c741039545aeafba4a4cf370b
   m_configObjects: {}
