@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/DropdownStyle.uss?fileID=7433441132597879392&amp;guid=8bbaeb03e9485d04081d1f374846f3fa&amp;type=3#DropdownStyle" />
+    <ui:VisualElement name="dropdown-area" style="position: absolute; top: 0; right: 0; left: 0; bottom: 0; align-items: center; justify-content: center;">
+        <ui:Label text="Right click anywhere to open the context menu" display-tooltip-when-elided="true" />
+    </ui:VisualElement>
+    <ui:Button text="Open" display-tooltip-when-elided="true" name="dropdown-btn" style="position: absolute; top: 20px; left: 20px;" />
+    <ui:Button text="Open Custom" display-tooltip-when-elided="true" name="custom-dropdown-btn" style="position: absolute; top: 20px; left: 80px;" />
+</ui:UXML>
