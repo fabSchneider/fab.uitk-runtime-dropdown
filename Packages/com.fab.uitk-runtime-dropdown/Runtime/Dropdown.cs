@@ -488,7 +488,7 @@ namespace Fab.UITKDropdown
 
             blockingLayer.RegisterCallback<MouseDownEvent>(evt =>
             {
-                if (evt.target == blockingLayer))
+                if (evt.target == blockingLayer)
                     Close();
             });
             blockingLayer.RegisterCallback<KeyDownEvent>(evt =>
