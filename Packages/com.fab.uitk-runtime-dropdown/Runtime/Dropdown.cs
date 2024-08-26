@@ -218,7 +218,8 @@ namespace Fab.UITKDropdown
                 usageHints = UsageHints.DynamicTransform;
                 this.dropdown = dropdown;
                 AddToClassList(outerContainerClassname);
-                menuContainer = new VisualElement().WithClass(menuContainerClassname);
+                menuContainer = new VisualElement();
+                menuContainer.AddToClassList(menuContainerClassname);
                 Add(menuContainer);
 
                 actionItems = new List<ActionItemManipulator>();
@@ -466,12 +467,12 @@ namespace Fab.UITKDropdown
         protected long openSubMenuDelay = 200;
 
         /// <summary>
-        /// Constructs the drop-down
+        /// Constructs the drop-down.
         /// </summary>
-        /// <param name="root">The root Element the drop-down will attach to</param>
-        /// <param name="makeItem">Optional function to customize item appearance</param>
-        /// <param name="setItem">Optional function to customize how item displays its content</param>
-        /// <param name="makeSeperator">Optional function to customize the separator appearance</param>
+        /// <param name="root">The root Element the drop-down will attach to.</param>
+        /// <param name="makeItem">Optional function to customize item appearance.</param>
+        /// <param name="setItem">Optional function to customize how items display their content.</param>
+        /// <param name="makeSeperator">Optional function to customize the separator appearance.</param>
         public Dropdown(VisualElement root,
             Func<VisualElement> makeItem = null,
             Action<VisualElement, DropdownMenuItem, string[], int> setItem = null,
@@ -483,8 +484,11 @@ namespace Fab.UITKDropdown
             this.root = root;
 
             blockingLayer = new VisualElement()
-                .WithAbsoluteFill()
-                .WithName(blockingLayerName);
+            {
+                name = blockingLayerName
+            };
+            blockingLayer.StretchToParentSize();
+
 
             blockingLayer.RegisterCallback<MouseDownEvent>(evt =>
             {
@@ -508,7 +512,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Opens a drop-down anchored to the bottom border of the target rect
+        /// Opens a drop-down anchored to the bottom border of the target rect.
         /// </summary>
         /// <param name="menu"></param>
         /// <param name="target"></param>
@@ -530,7 +534,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Opens a drop-down at the given world position
+        /// Opens a drop-down at the given world position.
         /// </summary>
         /// <param name="menu"></param>
         /// <param name="position"></param>
@@ -540,7 +544,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Closes the currently open drop-down
+        /// Closes the currently open drop-down.
         /// </summary>
         public void Close()
         {
@@ -632,31 +636,42 @@ namespace Fab.UITKDropdown
 
         }
 
+        /// <summary>
+        /// Creates a default menu item.
+        /// </summary>
         private VisualElement MakeDefaultItem()
         {
-            var ve = new VisualElement();
-            ve.Add(new VisualElement()
-                .WithClass(itemIconClassname)
-                .WithName("icon"));
-            var text = new Label();
-            text.WithClass(itemTextClassname)
-                .WithName("text");
+            VisualElement ve = new VisualElement();
+            VisualElement icon = new VisualElement() { name = "icon" };
+            icon.AddToClassList(itemIconClassname);
+            ve.Add(icon);
+            VisualElement text = new Label() { name = "text" };
+            text.AddToClassList(itemTextClassname);
             ve.Add(text);
-            ve.Add(new VisualElement()
-                .WithClass(itemArrowClassname)
-                .WithName("arrow"));
+            VisualElement arrow = new VisualElement() { name = "arrow" };
+            arrow.AddToClassList(itemArrowClassname);
+            ve.Add(arrow);
             return ve;
         }
 
+        /// <summary>
+        /// Default method for setting menu items. 
+        /// </summary>
         private void SetDefaultItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
         {
             ve.Q<Label>(name: "text").text = path[level];
         }
 
+        /// <summary>
+        /// Creates a default menu item.
+        /// </summary>
         private VisualElement MakeDefaultSeperator()
         {
-            var ve = new VisualElement().WithClass(seperatorClassname);
-            ve.Add(new VisualElement().WithClass(seperatorLineClassname));
+            VisualElement ve = new VisualElement();
+            ve.AddToClassList(seperatorClassname);
+            VisualElement seperator = new VisualElement();
+            seperator.AddToClassList(seperatorLineClassname);
+            ve.Add(seperator);
             return ve;
         }
 
