@@ -301,11 +301,11 @@ namespace Fab.UITKDropdown
                 // right align menu if it exceeds root's bounds
                 if (worldRect.xMax
                     + parentMenu.menuContainer.resolvedStyle.borderRightWidth
-                    + dropdown.subMenuOffset
+                    + dropdown.SubMenuOffset
                     + measuredWidth > dropdown.root.resolvedStyle.width)
-                    style.right = measuredWidth + dropdown.subMenuOffset - parentMenu.menuContainer.resolvedStyle.borderLeftWidth;
+                    style.right = measuredWidth + dropdown.SubMenuOffset - parentMenu.menuContainer.resolvedStyle.borderLeftWidth;
                 else
-                    style.left = localRect.xMax + dropdown.subMenuOffset;
+                    style.left = localRect.xMax + dropdown.SubMenuOffset;
 
                 // subtract border width to the top to align items
                 style.top = localRect.yMin
@@ -402,7 +402,7 @@ namespace Fab.UITKDropdown
                 measuredWidth = menuContainer.resolvedStyle.width;
 
                 if (parentMenu != null)
-                    measuredWidth += dropdown.subMenuOffset;
+                    measuredWidth += dropdown.SubMenuOffset;
 
                 float maxWidth = 0f;
 
@@ -463,7 +463,10 @@ namespace Fab.UITKDropdown
         private ObjectPool<VisualElement> separatorPool;
         private ObjectPool<Menu> subMenuPool;
 
-        private float subMenuOffset = -2f;
+        /// <summary>
+        /// Pixel offset of each sub menu from its parent menu.  
+        /// </summary>
+        public float SubMenuOffset { get; set; } = -2f;
 
         /// <summary>
         /// Delay in milliseconds before a hovered item opens its sub menu.
