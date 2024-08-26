@@ -33,7 +33,7 @@ namespace Fab.UITKDropdown.Sample
 
             dropdown = new Dropdown(root);
 
-            //setup button menu;
+            // setup button menu;
             btnMenu = new DropdownMenu();
             btnMenu.AppendAction("Action 1", DoMenuAction);
             btnMenu.AppendAction("Action 2", DoMenuAction);
@@ -52,7 +52,7 @@ namespace Fab.UITKDropdown.Sample
             var btn = root.Q<Button>(name: "dropdown-btn");
             btn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(btnMenu, btn.worldBound, evt);
 
-            //setup pointer menu;
+            // setup pointer menu;
             pointerMenu = new DropdownMenu();
             pointerMenu.AppendAction("Koala", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Kangaroo", ToggleOption, GetOptionStatus);

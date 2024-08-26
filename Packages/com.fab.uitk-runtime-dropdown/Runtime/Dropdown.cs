@@ -239,7 +239,7 @@ namespace Fab.UITKDropdown
             /// </summary>
             public void ReturnToPool()
             {
-                //return actionItems to pool
+                // return actionItems to pool
                 for (int i = 0; i < actionItems.Count; i++)
                 {
                     var item = actionItems[i];
@@ -247,7 +247,7 @@ namespace Fab.UITKDropdown
                     dropdown.actionItemPool.ReturnToPool(item);
                 }
 
-                //return subItems to pool
+                // return subItems to pool
                 for (int i = 0; i < subItems.Count; i++)
                 {
                     var item = subItems[i];
@@ -263,10 +263,10 @@ namespace Fab.UITKDropdown
                     dropdown.separatorPool.ReturnToPool(separator);
                 }
 
-                //close all sub-menus
+                // close all sub-menus
                 CloseSubMenus();
 
-                //return sub menus to pool
+                // return sub menus to pool
                 foreach (var subMenu in subMenus.Values)
                     subMenu.ReturnToPool();
 
@@ -296,9 +296,9 @@ namespace Fab.UITKDropdown
             {
                 target.AddToClassList(openedItemClassname);
                 var worldRect = dropdown.root.WorldToLocal(target.worldBound);
-                var localRect = target.localBound;//parentMenu.WorldToLocal(target.worldBound);
+                var localRect = target.localBound;
 
-                //right align menu if it exceeds root's bounds
+                // right align menu if it exceeds root's bounds
                 if (worldRect.xMax
                     + parentMenu.menuContainer.resolvedStyle.borderRightWidth
                     + dropdown.subMenuOffset
@@ -307,7 +307,7 @@ namespace Fab.UITKDropdown
                 else
                     style.left = localRect.xMax + dropdown.subMenuOffset;
 
-                //subtract border width to the top to align items
+                // subtract border width to the top to align items
                 style.top = localRect.yMin
                     - parentMenu.menuContainer.resolvedStyle.borderTopWidth
                     - parentMenu.menuContainer.resolvedStyle.paddingTop;
@@ -318,8 +318,8 @@ namespace Fab.UITKDropdown
                 if (openSubMenu == menu)
                     return;
 
-                //Make sure that open sub menu is closed 
-                //before opening a new one
+                // Make sure that open sub menu is closed 
+                // before opening a new one
                 CloseSubMenus();
 
                 openSubMenu = menu;
@@ -354,7 +354,7 @@ namespace Fab.UITKDropdown
 
             public void AddItem(DropdownMenuItem item, string[] path, int level)
             {
-                //leaf item
+                // leaf item
                 if (level == path.Length - 1 || path.Length == 0)
                 {
                     if (item is DropdownMenuAction action)
@@ -375,12 +375,12 @@ namespace Fab.UITKDropdown
                         menuContainer.Add(separator);
                     }
                 }
-                //create sub-menu item
+                // create sub-menu item
                 else
                 {
                     if (!subMenus.TryGetValue(path[level], out Menu subMenu))
                     {
-                        //create new sub-menu if it has not been created yet
+                        // create new sub-menu if it has not been created yet
                         var m = dropdown.subItemPool.GetPooled();
                         subMenu = dropdown.subMenuPool.GetPooled();
                         subMenu.Set(this, m.target);
@@ -391,7 +391,7 @@ namespace Fab.UITKDropdown
                         subMenus.Add(path[level], subMenu);
                         subItems.Add(m);
                     }
-                    //add menu initially so its style is resolved
+                    // add menu initially so its style is resolved
                     Add(subMenu);
                     subMenu.AddItem(item, path, level + 1);
                 }
@@ -586,15 +586,15 @@ namespace Fab.UITKDropdown
         {
             rootMenu.UnregisterCallback<GeometryChangedEvent>(OnBuildComplete);
 
-            //measure width of all menus to determine alignment
+            // measure width of all menus to determine alignment
             rootMenu.MeasureWidth();
-            //detach all menus that have been attached while building
+            // detach all menus that have been attached while building
             rootMenu.DetachAll();
 
             var localRect = root.WorldToLocal(targetRect);
 
-            //set position of root menu
-            //right align if menus right bound exceeds the roots right bound
+            // set position of root menu
+            // right align if menus right bound exceeds the roots right bound
             if (localRect.x + rootMenu.measuredWidth > root.resolvedStyle.width)
                 rootMenu.style.left = root.resolvedStyle.width - rootMenu.menuContainer.resolvedStyle.width;
             else
@@ -637,8 +637,8 @@ namespace Fab.UITKDropdown
 
             item.Reset();
 
-            //remove all classes that might have been added 
-            //to the target while they were in use
+            // remove all classes that might have been added 
+            // to the target while they were in use
             target.RemoveFromClassList(hiddenItemClassname);
             target.RemoveFromClassList(checkedItemClassname);
             target.RemoveFromClassList(disabledItemClassname);

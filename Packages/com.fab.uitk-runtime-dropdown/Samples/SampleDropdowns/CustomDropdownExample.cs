@@ -25,7 +25,7 @@ namespace Fab.UITKDropdown.Sample
 
         private void Start()
         {
-            //setup custom menu
+            // setup custom menu
             customMenu = new DropdownMenu();
             for (int i = 0; i < items.Length; i++)
             {
@@ -65,7 +65,7 @@ namespace Fab.UITKDropdown.Sample
         {
             Dropdown.SetDefaultItem(ve , item, path, level);
 
-            //don't style sub menu items
+            // don't style sub menu items
             if (path.Length - 1 == level &&
                 item is DropdownMenuAction actionItem && actionItem.userData is CustomDropdownItemData data)
             {
