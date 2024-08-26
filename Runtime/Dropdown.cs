@@ -73,14 +73,14 @@ namespace Fab.UITKDropdown
                 cancel = false;
                 target.schedule.Execute(Activate).StartingIn(menu.dropdown.openSubMenuDelay);
 
-                //cant reliably remove highlight on last item right now
-                //due to a bug in UI Toolkit where it fires on enter again when the geometry has changed
-
-                //if (menu.openSubMenu != null && menu.openSubMenu.target != target)
-                //{
-                //    menu.openSubMenu.target.RemoveFromClassList(openedItemClassname);
-                //    menu.openSubMenu.target.RemoveFromClassList(hoveredItemClassname);
-                //}
+                // cant reliably remove highlight on last item right now
+                // due to a bug in UI Toolkit where it fires on enter again when the geometry has changed
+                // Bug seems to be resolved in 2022.3.16f1
+                if (menu.openSubMenu != null && menu.openSubMenu.target != target)
+                {
+                    menu.openSubMenu.target.RemoveFromClassList(openedItemClassname);
+                    menu.openSubMenu.target.RemoveFromClassList(hoveredItemClassname);
+                }
 
                 target.AddToClassList(hoveredItemClassname);
                 target.Focus();
