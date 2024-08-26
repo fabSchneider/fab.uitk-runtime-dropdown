@@ -639,7 +639,7 @@ namespace Fab.UITKDropdown
         /// <summary>
         /// Creates a default menu item.
         /// </summary>
-        public VisualElement MakeDefaultItem()
+        public static VisualElement MakeDefaultItem()
         {
             VisualElement ve = new VisualElement();
             VisualElement icon = new VisualElement() { name = "icon" };
@@ -657,7 +657,7 @@ namespace Fab.UITKDropdown
         /// <summary>
         /// Default method for setting menu items. 
         /// </summary>
-        public void SetDefaultItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
+        public static void SetDefaultItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
         {
             ve.Q<Label>(name: "text").text = path[level];
         }
@@ -665,7 +665,7 @@ namespace Fab.UITKDropdown
         /// <summary>
         /// Creates a default menu item.
         /// </summary>
-        public VisualElement MakeDefaultSeparator()
+        public static VisualElement MakeDefaultSeparator()
         {
             VisualElement ve = new VisualElement();
             ve.AddToClassList(separatorClassname);
