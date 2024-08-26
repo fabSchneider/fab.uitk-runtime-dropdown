@@ -51,7 +51,7 @@
 }
 
 .fab-dropdown__item--checked > .fab-dropdown__item__icon {
-    background-image: url('project://database/Assets/UI/Icons/checkmark.png?fileID=2800000&guid=3818e0ffae40e8247801818bb2cc23a1&type=3#checkmark');
+    background-image: url('project://database/Packages/com.fab.uitk-runtime-dropdown/UI/Icons/checkmark.png?fileID=2800000&guid=3818e0ffae40e8247801818bb2cc23a1&type=3#checkmark');
     -unity-background-image-tint-color: rgb(111, 111, 111);
 }
 
@@ -85,16 +85,16 @@
 }
 
 .fab-dropdown__sub-item > .fab-dropdown__item__arrow {
-    background-image: url('project://database/Assets/UI/Icons/arrow-right.png?fileID=2800000&guid=875c7e133f8aebf41898f307c1fbdabd&type=3#arrow-right');
+    background-image: url('project://database/Packages/com.fab.uitk-runtime-dropdown/UI/Icons/arrow-right.png?fileID=2800000&guid=875c7e133f8aebf41898f307c1fbdabd&type=3#arrow-right');
 }
 
-.fab-dropdown__seperator {
+.fab-dropdown__separator {
     height: 8px;
     justify-content: center;
     padding-left: 20px;
 }
 
-.fab-dropdown__seperator__line {
+.fab-dropdown__separator__line {
     height: 1px;
     background-color: rgb(230, 230, 230);
 }
