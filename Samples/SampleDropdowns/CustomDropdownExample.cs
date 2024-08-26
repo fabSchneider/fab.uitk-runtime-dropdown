@@ -47,38 +47,23 @@ namespace Fab.UITKDropdown.Sample
         }
         private VisualElement MakeCustomItem()
         {
-            var ve = new VisualElement();
+            VisualElement ve = Dropdown.MakeDefaultItem();
 
-            //icon
-            var icon = new VisualElement()
-                .WithClass(Dropdown.itemIconClassname)
-                .WithName("icon");
-            ve.Add(icon);
-
-            //text
-            ve.Add(new Label()
-                .WithClass(Dropdown.itemTextClassname)
-                .WithName("text"));
-
-            var hotkeyText = new Label();
-            hotkeyText
-                .WithClass(Dropdown.itemTextClassname)
-                .WithName("hotkey-text");
+            // add a hot key text
+            var hotkeyText = new Label() { name = "hotkey-text" };
+            hotkeyText.AddToClassList(Dropdown.itemTextClassname);
             hotkeyText.style.unityTextAlign = TextAnchor.MiddleRight;
             hotkeyText.style.marginLeft = 24f;
-            ve.Add(hotkeyText);
 
-            //sub-menu arrow
-            ve.Add(new VisualElement()
-                .WithClass(Dropdown.itemArrowClassname)
-                .WithName("arrow"));
+            // insert the hot key text before the arrow.
+            ve.Insert(2, hotkeyText);
 
             return ve;
         }
 
         private void SetCustomItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
         {
-            ve.Q<Label>(name: "text").text = path[level];
+            Dropdown.SetDefaultItem(ve , item, path, level);
 
             //don't style sub menu items
             if (path.Length - 1 == level &&
