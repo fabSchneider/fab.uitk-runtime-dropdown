@@ -50,7 +50,7 @@ namespace Fab.UITKDropdown.Sample
             btnMenu.AppendAction("Deep/Nested/Menu/That/Would/Annoy/Anyone/Who/Has/To/Click/Through/It/But/Atleast/It/Wraps/Around/Nicely/When/It/Reaches/The/End/Of/The/Screen", DoMenuAction);
 
             var btn = root.Q<Button>(name: "dropdown-btn");
-            btn.clickable.clicked += () => dropdown.Open(btnMenu, btn.worldBound);
+            btn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(btnMenu, btn.worldBound, evt);
 
             //setup pointer menu;
             pointerMenu = new DropdownMenu();
@@ -64,7 +64,7 @@ namespace Fab.UITKDropdown.Sample
             {
                 if (evt.button == 1)
                 {
-                    dropdown.Open(pointerMenu, evt.position);
+                    dropdown.Open(pointerMenu, evt.position, evt);
                 }
             });
         }
