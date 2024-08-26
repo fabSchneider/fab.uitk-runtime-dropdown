@@ -512,11 +512,9 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Opens a drop-down anchored to the bottom border of the target rect.
+        /// Opens a drop-down anchored to the bottom border of the target world bounds.
         /// </summary>
-        /// <param name="menu"></param>
-        /// <param name="target"></param>
-        public void Open(DropdownMenu menu, Rect target)
+        public void Open(DropdownMenu menu, Rect targetWorldBound, EventBase evt = null)
         {
             if (menu == null)
                 throw new ArgumentNullException(nameof(menu));
@@ -524,9 +522,26 @@ namespace Fab.UITKDropdown
             if (blockingLayer.parent != null)
                 Close();
 
-            targetRect = target;
+            targetRect = targetWorldBound;
 
-            menu.PrepareForDisplay(null);
+            // Dropdown menu only supports Mouse Events
+            // In case the incoming event is a pointer event we need to
+            // synthesize a new mouse event from the pointer event
+            if (evt is IPointerEvent pointerEvent)
+            {
+                using var mouseEvt = MouseDownEvent.GetPooled(pointerEvent.position, 0, 1, pointerEvent.deltaPosition, pointerEvent.modifiers);
+                menu.PrepareForDisplay(mouseEvt);
+            }
+            else if (evt == null)
+            {
+                using var mouseEvt = MouseDownEvent.GetPooled(targetWorldBound.position, 0, 1, Vector2.zero);
+                menu.PrepareForDisplay(mouseEvt);
+            }
+            else
+            {
+                menu.PrepareForDisplay(evt);
+            }
+
             Build(menu);
 
             rootMenu.RegisterCallback<GeometryChangedEvent>(OnBuildComplete);
@@ -536,11 +551,9 @@ namespace Fab.UITKDropdown
         /// <summary>
         /// Opens a drop-down at the given world position.
         /// </summary>
-        /// <param name="menu"></param>
-        /// <param name="position"></param>
-        public void Open(DropdownMenu menu, Vector2 position)
+        public void Open(DropdownMenu menu, Vector2 worldPosition, EventBase evt = null)
         {
-            Open(menu, new Rect(root.WorldToLocal(position), Vector2.zero));
+            Open(menu, new Rect(worldPosition, Vector2.zero), evt);
         }
 
         /// <summary>
