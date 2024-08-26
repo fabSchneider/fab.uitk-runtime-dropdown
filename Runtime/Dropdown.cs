@@ -71,7 +71,7 @@ namespace Fab.UITKDropdown
             protected virtual void OnEnter(PointerEnterEvent evt)
             {
                 cancel = false;
-                target.schedule.Execute(Activate).StartingIn(menu.dropdown.openSubMenuDelay);
+                target.schedule.Execute(Activate).StartingIn(menu.dropdown.SubMenuOpenDelay);
 
                 // cant reliably remove highlight on last item right now
                 // due to a bug in UI Toolkit where it fires on enter again when the geometry has changed
@@ -464,7 +464,12 @@ namespace Fab.UITKDropdown
         private ObjectPool<Menu> subMenuPool;
 
         private float subMenuOffset = -2f;
-        protected long openSubMenuDelay = 200;
+
+        /// <summary>
+        /// Delay in milliseconds before a hovered item opens its sub menu.
+        /// </summary>
+        public long SubMenuOpenDelay { get; set; } = 200;
+
 
         /// <summary>
         /// Constructs the drop-down.
