@@ -15,8 +15,8 @@ namespace Fab.UITKDropdown
         private static readonly string menuContainerClassname = classname + "__menu-container";
         private static readonly string itemClassname = classname + "__item";
         private static readonly string subItemClassname = classname + "__sub-item";
-        private static readonly string seperatorClassname = classname + "__seperator";
-        private static readonly string seperatorLineClassname = seperatorClassname + "__line";
+        private static readonly string separatorClassname = classname + "__separator";
+        private static readonly string separatorLineClassname = separatorClassname + "__line";
 
         private static readonly string openedItemClassname = subItemClassname + "--opened";
         private static readonly string hoveredItemClassname = itemClassname + "--hovered";
@@ -203,7 +203,7 @@ namespace Fab.UITKDropdown
 
             private List<ActionItemManipulator> actionItems;
             private List<SubItemManipulator> subItems;
-            private List<VisualElement> seperators;
+            private List<VisualElement> separators;
             public Dictionary<string, Menu> subMenus;
 
             public Menu parentMenu;
@@ -224,7 +224,7 @@ namespace Fab.UITKDropdown
 
                 actionItems = new List<ActionItemManipulator>();
                 subItems = new List<SubItemManipulator>();
-                seperators = new List<VisualElement>();
+                separators = new List<VisualElement>();
                 subMenus = new Dictionary<string, Menu>();
             }
 
@@ -256,11 +256,11 @@ namespace Fab.UITKDropdown
                 }
 
                 //return separators to pool
-                for (int i = 0; i < seperators.Count; i++)
+                for (int i = 0; i < separators.Count; i++)
                 {
-                    var seperator = seperators[i];
-                    seperator.RemoveFromHierarchy();
-                    dropdown.seperatorPool.ReturnToPool(seperator);
+                    var separator = separators[i];
+                    separator.RemoveFromHierarchy();
+                    dropdown.separatorPool.ReturnToPool(separator);
                 }
 
                 //close all sub-menus
@@ -276,8 +276,8 @@ namespace Fab.UITKDropdown
                 if (actionItems.Capacity > 32) actionItems.Capacity = 32;
                 subItems.Clear();
                 if (subItems.Capacity > 32) subItems.Capacity = 32;
-                seperators.Clear();
-                if (seperators.Capacity > 32) seperators.Capacity = 32;
+                separators.Clear();
+                if (separators.Capacity > 32) separators.Capacity = 32;
 
                 openSubMenu = null;
                 subMenus.Clear();
@@ -370,9 +370,9 @@ namespace Fab.UITKDropdown
                     }
                     else
                     {
-                        var seperator = dropdown.seperatorPool.GetPooled();
-                        seperators.Add(seperator);
-                        menuContainer.Add(seperator);
+                        var separator = dropdown.separatorPool.GetPooled();
+                        separators.Add(separator);
+                        menuContainer.Add(separator);
                     }
                 }
                 //create sub-menu item
@@ -460,7 +460,7 @@ namespace Fab.UITKDropdown
 
         private ObjectPool<ActionItemManipulator> actionItemPool;
         private ObjectPool<SubItemManipulator> subItemPool;
-        private ObjectPool<VisualElement> seperatorPool;
+        private ObjectPool<VisualElement> separatorPool;
         private ObjectPool<Menu> subMenuPool;
 
         private float subMenuOffset = -2f;
@@ -472,11 +472,11 @@ namespace Fab.UITKDropdown
         /// <param name="root">The root Element the drop-down will attach to.</param>
         /// <param name="makeItem">Optional function to customize item appearance.</param>
         /// <param name="setItem">Optional function to customize how items display their content.</param>
-        /// <param name="makeSeperator">Optional function to customize the separator appearance.</param>
+        /// <param name="makeSeparator">Optional function to customize the separator appearance.</param>
         public Dropdown(VisualElement root,
             Func<VisualElement> makeItem = null,
             Action<VisualElement, DropdownMenuItem, string[], int> setItem = null,
-            Func<VisualElement> makeSeperator = null)
+            Func<VisualElement> makeSeparator = null)
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -507,7 +507,7 @@ namespace Fab.UITKDropdown
             actionItemPool = new ObjectPool<ActionItemManipulator>(32, true, MakeActionItem, ResetItem);
             subItemPool = new ObjectPool<SubItemManipulator>(32, true, MakeSubItem, ResetItem);
 
-            seperatorPool = new ObjectPool<VisualElement>(32, true, makeSeperator == null ? MakeDefaultSeperator : makeSeperator);
+            separatorPool = new ObjectPool<VisualElement>(32, true, makeSeparator == null ? MakeDefaultSeparator : makeSeparator);
             subMenuPool = new ObjectPool<Menu>(16, true, MakeMenu);
         }
 
@@ -665,13 +665,13 @@ namespace Fab.UITKDropdown
         /// <summary>
         /// Creates a default menu item.
         /// </summary>
-        public VisualElement MakeDefaultSeperator()
+        public VisualElement MakeDefaultSeparator()
         {
             VisualElement ve = new VisualElement();
-            ve.AddToClassList(seperatorClassname);
-            VisualElement seperator = new VisualElement();
-            seperator.AddToClassList(seperatorLineClassname);
-            ve.Add(seperator);
+            ve.AddToClassList(separatorClassname);
+            VisualElement separator = new VisualElement();
+            separator.AddToClassList(separatorLineClassname);
+            ve.Add(separator);
             return ve;
         }
 
