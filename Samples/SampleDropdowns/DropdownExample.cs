@@ -59,8 +59,7 @@ namespace Fab.UITKDropdown.Sample
             pointerMenu.AppendAction("Platypus", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Wombat", ToggleOption, GetOptionStatus);
 
-
-            root.Q<VisualElement>(name: "dropdown-area").RegisterCallback<PointerDownEvent>(evt =>
+            root.Q<VisualElement>(name: "dropdown-area").RegisterCallback<PointerUpEvent>(evt =>
             {
                 if (evt.button == 1)
                 {
