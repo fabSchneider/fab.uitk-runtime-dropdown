@@ -12,6 +12,7 @@ namespace Fab.UITKDropdown
         private static readonly string blockingLayerName = "dropdown-blocking-layer";
 
         private static readonly string menuClassname = classname + "__menu";
+        private static readonly string menuOpenClassname = menuClassname + "--open";
         private static readonly string menuDepthClassname = menuClassname + "--depth";
         private static readonly string menuRightwardsClassname = menuClassname + "--rightwards";
         private static readonly string menuUpwardsClassname = menuClassname + "--upwards";
@@ -308,7 +309,10 @@ namespace Fab.UITKDropdown
                 openSubMenu = menu;
                 menu.target.AddToClassList(openedItemClassname);
 
-                Add(menu);            
+                Add(menu);
+
+                menu.schedule.Execute(() => menu.AddToClassList(menuOpenClassname)).ExecuteLater(10);
+             
             }
 
             public void CloseSubMenus()
@@ -324,6 +328,7 @@ namespace Fab.UITKDropdown
                 }
 
                 openSubMenu.RemoveFromHierarchy();
+                openSubMenu.RemoveFromClassList(menuOpenClassname);
                 openSubMenu.CloseConsecutive();
                 openSubMenu = null;
             }
@@ -333,6 +338,7 @@ namespace Fab.UITKDropdown
                 target?.RemoveFromClassList(openedItemClassname);
                 if(openSubMenu != null)
                 {
+                    openSubMenu.RemoveFromClassList(menuOpenClassname);
                     openSubMenu.RemoveFromHierarchy();
                     openSubMenu.CloseSubMenus();
                 }
@@ -548,6 +554,7 @@ namespace Fab.UITKDropdown
             rootMenu = subMenuPool.GetPooled();
             rootMenu.AddToClassList(classname);
             rootMenu.AddToClassList(menuDepthClassname + "0");
+            rootMenu.schedule.Execute(() => rootMenu.AddToClassList(menuOpenClassname)).ExecuteLater(10);
 
             blockingLayer.Add(rootMenu);
             foreach (var item in menu.MenuItems())

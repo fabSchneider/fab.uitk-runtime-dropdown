@@ -31,6 +31,17 @@
     --fab-dropdown-item-hover-color: rgba(255, 255, 255, 0.15);
 }
 
+.fab-dropdown__menu > .fab-dropdown__menu-container{
+    opacity: 0;
+}
+
+.fab-dropdown__menu.fab-dropdown__menu--open > .fab-dropdown__menu-container{
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    opacity: 1;
+}
+
+
 .fab-dropdown__item {
     border-radius: 2px;
 }
