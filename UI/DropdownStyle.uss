@@ -1,41 +1,42 @@
-:root{
-    --fab-dropdown-menu-border-width: 1px;    
+.fab-dropdown {
+    --fab-dropdown-menu-border-width: 1px;
     --fab-dropdown-menu-padding: 2px;
-    --fab-dropdown-menu-vertical-offset: -3px;  /* -(border width + padding)*/
-    --fab-dropdown-menu-horizontal-offset: 0px;
-
-    --fab-dropdown-menu-border-radius: 0px;
-
+    --fab-dropdown-menu-vertical-offset: -3px;
+    --fab-dropdown-menu-horizontal-offset: 0;
+    --fab-dropdown-menu-border-radius: 0;
     --fab-dropdown-menu-min-width: 128px;
     --fab-dropdown-menu-min-height: 20px;
-
     --fab-dropdown-menu-bkg-color: white;
     --fab-dropdown-menu-border-color: rgb(190, 190, 190);
+    --fab-dropdown-checkmark: url("project://database/Packages/com.fab.uitk-runtime-dropdown/UI/Icons/checkmark.png?fileID=2800000&guid=3818e0ffae40e8247801818bb2cc23a1&type=3#checkmark");
+    --fab-dropdown-checkmark-color: rgb(111, 111, 111);
+    --fab-dropdown-arrow: url("project://database/Packages/com.fab.uitk-runtime-dropdown/UI/Icons/arrow-right.png?fileID=2800000&guid=875c7e133f8aebf41898f307c1fbdabd&type=3#arrow-right");
+    --fab-dropdown-arrow-color: rgb(111, 111, 111);
+    --fab-dropdown-separator-color: rgba(0, 0, 0, 0.1);
+    --fab-dropdown-item-hover-color: rgba(0, 182, 217, 0.24);
 }
 
 .fab-dropdown__menu {
     position: absolute;
     width: auto;
     height: auto;
-
     margin-left: var(--fab-dropdown-menu-horizontal-offset);
     margin-top: var(--fab-dropdown-menu-vertical-offset);
 }
 
 .fab-dropdown__menu--depth0 {
-    margin: 0px;
+    margin: 0;
 }
 
-.fab-dropdown__menu--rightwards{
-    margin-left: 0px;
+.fab-dropdown__menu--rightwards {
+    margin-left: 0;
     margin-right: var(--fab-dropdown-menu-horizontal-offset);
 }
 
-.fab-dropdown__menu--upwards{
-    margin-top: 0px;
+.fab-dropdown__menu--upwards {
+    margin-top: 0;
     margin-bottom: var(--fab-dropdown-menu-horizontal-offset);
 }
-
 
 .fab-dropdown__menu-container {
     min-width: var(--fab-dropdown-menu-min-width);
@@ -55,11 +56,11 @@
 }
 
 .fab-dropdown__item:focus {
-    background-color: rgba(0, 182, 217, 0.24);
+    background-color: var(--fab-dropdown-item-hover-color);
 }
 
 .fab-dropdown__item--hovered {
-    background-color: rgba(0, 182, 217, 0.24);
+    background-color: var(--fab-dropdown-item-hover-color);
 }
 
 .fab-dropdown__item--hidden {
@@ -71,12 +72,12 @@
 }
 
 .fab-dropdown__item--checked > .fab-dropdown__item__icon {
-    background-image: url('project://database/Packages/com.fab.uitk-runtime-dropdown/UI/Icons/checkmark.png?fileID=2800000&guid=3818e0ffae40e8247801818bb2cc23a1&type=3#checkmark');
-    -unity-background-image-tint-color: rgb(111, 111, 111);
+    background-image: var(--fab-dropdown-checkmark);
+    -unity-background-image-tint-color: var(--fab-dropdown-checkmark-color);
 }
 
 .fab-dropdown__sub-item--opened {
-    background-color: rgba(0, 182, 217, 0.24);
+    background-color: var(--fab-dropdown-item-hover-color);
 }
 
 .fab-dropdown__item__icon {
@@ -101,11 +102,11 @@
     height: 8px;
     margin-left: 8px;
     margin-right: 4px;
-    -unity-background-image-tint-color: rgb(111, 111, 111);
+    -unity-background-image-tint-color: var(--fab-dropdown-arrow-color);
 }
 
 .fab-dropdown__sub-item > .fab-dropdown__item__arrow {
-    background-image: url('project://database/Packages/com.fab.uitk-runtime-dropdown/UI/Icons/arrow-right.png?fileID=2800000&guid=875c7e133f8aebf41898f307c1fbdabd&type=3#arrow-right');
+    background-image: var(--fab-dropdown-arrow);
 }
 
 .fab-dropdown__separator {
@@ -116,5 +117,5 @@
 
 .fab-dropdown__separator__line {
     height: 1px;
-    background-color: rgb(230, 230, 230);
+    background-color: var(--fab-dropdown-separator-color);
 }

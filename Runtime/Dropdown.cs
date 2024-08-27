@@ -307,7 +307,8 @@ namespace Fab.UITKDropdown
 
                 openSubMenu = menu;
                 menu.target.AddToClassList(openedItemClassname);
-                Add(menu);
+
+                Add(menu);            
             }
 
             public void CloseSubMenus()
@@ -330,8 +331,12 @@ namespace Fab.UITKDropdown
             private void CloseConsecutive()
             {
                 target?.RemoveFromClassList(openedItemClassname);
-                openSubMenu?.RemoveFromHierarchy();
-                openSubMenu?.CloseSubMenus();
+                if(openSubMenu != null)
+                {
+                    openSubMenu.RemoveFromHierarchy();
+                    openSubMenu.CloseSubMenus();
+                }
+
                 openSubMenu = null;
             }
 
@@ -541,6 +546,7 @@ namespace Fab.UITKDropdown
         {
             rootMenu?.ReturnToPool();
             rootMenu = subMenuPool.GetPooled();
+            rootMenu.AddToClassList(classname);
             rootMenu.AddToClassList(menuDepthClassname + "0");
 
             blockingLayer.Add(rootMenu);
