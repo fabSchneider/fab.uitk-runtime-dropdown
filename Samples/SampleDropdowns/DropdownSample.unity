@@ -173,19 +173,19 @@ MonoBehaviour:
   items:
   - icon: {fileID: 2800000, guid: 59bfc82efab5cc940a00dcabb00b940b, type: 3}
     path: Action A
-    hotkey: Shift + A
+    hotkey: Shift+A
   - icon: {fileID: 2800000, guid: 095275c1eb9a9c84188e6c0dd8895477, type: 3}
     path: Action B
-    hotkey: Shift + B
+    hotkey: Shift+B
   - icon: {fileID: 0}
     path: Sub Menu/Action C
     hotkey: 
   - icon: {fileID: 2800000, guid: ad14c89254809bb49867a213fb057ae9, type: 3}
     path: Sub Menu/Action D
-    hotkey: Alt + D
+    hotkey: Alt+D
   - icon: {fileID: 2800000, guid: a2d4254e5d2356243b67fe532b342983, type: 3}
     path: Action E
-    hotkey: Shift + E
+    hotkey: Shift+E
 --- !u!114 &873290429
 MonoBehaviour:
   m_ObjectHideFlags: 0
