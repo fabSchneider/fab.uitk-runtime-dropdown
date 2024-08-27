@@ -11,7 +11,11 @@ namespace Fab.UITKDropdown
 
         private static readonly string blockingLayerName = "dropdown-blocking-layer";
 
-        private static readonly string outerContainerClassname = classname + "__outer-container";
+        private static readonly string menuClassname = classname + "__menu";
+        private static readonly string menuDepthClassname = menuClassname + "--depth";
+        private static readonly string menuRightwardsClassname = menuClassname + "--rightwards";
+        private static readonly string menuUpwardsClassname = menuClassname + "--upwards";
+
         private static readonly string menuContainerClassname = classname + "__menu-container";
         private static readonly string itemClassname = classname + "__item";
         private static readonly string subItemClassname = classname + "__sub-item";
@@ -211,13 +215,11 @@ namespace Fab.UITKDropdown
 
             public Menu openSubMenu;
 
-            public float measuredWidth = float.NaN;
-
             public Menu(Dropdown dropdown)
             {
                 usageHints = UsageHints.DynamicTransform;
                 this.dropdown = dropdown;
-                AddToClassList(outerContainerClassname);
+                AddToClassList(menuClassname);
                 menuContainer = new VisualElement();
                 menuContainer.AddToClassList(menuContainerClassname);
                 Add(menuContainer);
@@ -272,6 +274,7 @@ namespace Fab.UITKDropdown
 
                 target = null;
                 parentMenu = null;
+
                 actionItems.Clear();
                 if (actionItems.Capacity > 32) actionItems.Capacity = 32;
                 subItems.Clear();
@@ -282,35 +285,15 @@ namespace Fab.UITKDropdown
                 openSubMenu = null;
                 subMenus.Clear();
 
-                measuredWidth = float.NaN;
-
                 style.left = StyleKeyword.Null;
                 style.right = StyleKeyword.Null;
                 style.top = StyleKeyword.Null;
                 style.bottom = StyleKeyword.Null;
 
+                ClearClassList();
+                AddToClassList(menuClassname);
+
                 dropdown.subMenuPool.ReturnToPool(this);
-            }
-
-            private void PrepareOpen()
-            {
-                target.AddToClassList(openedItemClassname);
-                var worldRect = dropdown.root.WorldToLocal(target.worldBound);
-                var localRect = target.localBound;
-
-                // right align menu if it exceeds root's bounds
-                if (worldRect.xMax
-                    + parentMenu.menuContainer.resolvedStyle.borderRightWidth
-                    + dropdown.SubMenuOffset
-                    + measuredWidth > dropdown.root.resolvedStyle.width)
-                    style.right = measuredWidth + dropdown.SubMenuOffset - parentMenu.menuContainer.resolvedStyle.borderLeftWidth;
-                else
-                    style.left = localRect.xMax + dropdown.SubMenuOffset;
-
-                // subtract border width to the top to align items
-                style.top = localRect.yMin
-                    - parentMenu.menuContainer.resolvedStyle.borderTopWidth
-                    - parentMenu.menuContainer.resolvedStyle.paddingTop;
             }
 
             public void OpenSubMenu(Menu menu)
@@ -318,12 +301,12 @@ namespace Fab.UITKDropdown
                 if (openSubMenu == menu)
                     return;
 
-                // Make sure that open sub menu is closed 
+                // Make sure that any open sub menu is closed 
                 // before opening a new one
                 CloseSubMenus();
 
                 openSubMenu = menu;
-                menu.PrepareOpen();
+                menu.target.AddToClassList(openedItemClassname);
                 Add(menu);
             }
 
@@ -391,27 +374,13 @@ namespace Fab.UITKDropdown
                         subMenus.Add(path[level], subMenu);
                         subItems.Add(m);
                     }
-                    // add menu initially so its style is resolved
+                    subMenu.AddToClassList(menuDepthClassname + (level + 1).ToString());
+                    // add menu to resolve its style
                     Add(subMenu);
+
                     subMenu.AddItem(item, path, level + 1);
                 }
             }
-
-            public float MeasureWidth()
-            {
-                measuredWidth = menuContainer.resolvedStyle.width;
-
-                if (parentMenu != null)
-                    measuredWidth += dropdown.SubMenuOffset;
-
-                float maxWidth = 0f;
-
-                foreach (var submenu in subMenus.Values)
-                    maxWidth = Mathf.Max(maxWidth, submenu.MeasureWidth());
-
-                return measuredWidth + maxWidth;
-            }
-
             public void DetachAll()
             {
                 foreach (var submenu in subMenus.Values)
@@ -462,11 +431,6 @@ namespace Fab.UITKDropdown
         private ObjectPool<SubItemManipulator> subItemPool;
         private ObjectPool<VisualElement> separatorPool;
         private ObjectPool<Menu> subMenuPool;
-
-        /// <summary>
-        /// Pixel offset of each sub menu from its parent menu.  
-        /// </summary>
-        public float SubMenuOffset { get; set; } = -2f;
 
         /// <summary>
         /// Delay in milliseconds before a hovered item opens its sub menu.
@@ -520,7 +484,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Opens a drop-down anchored to the bottom border of the target world bounds.
+        /// Opens the drop-down anchored to the bottom border of the target world bounds.
         /// </summary>
         public void Open(DropdownMenu menu, Rect targetWorldBound, EventBase evt = null)
         {
@@ -557,7 +521,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Opens a drop-down at the given world position.
+        /// Opens the drop-down at the given world position.
         /// </summary>
         public void Open(DropdownMenu menu, Vector2 worldPosition, EventBase evt = null)
         {
@@ -565,7 +529,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Closes the currently open drop-down.
+        /// Closes the drop-down.
         /// </summary>
         public void Close()
         {
@@ -577,6 +541,7 @@ namespace Fab.UITKDropdown
         {
             rootMenu?.ReturnToPool();
             rootMenu = subMenuPool.GetPooled();
+            rootMenu.AddToClassList(menuDepthClassname + "0");
 
             blockingLayer.Add(rootMenu);
             foreach (var item in menu.MenuItems())
@@ -594,22 +559,82 @@ namespace Fab.UITKDropdown
         {
             rootMenu.UnregisterCallback<GeometryChangedEvent>(OnBuildComplete);
 
-            // measure width of all menus to determine alignment
-            rootMenu.MeasureWidth();
+            Rect rootWorldBound = root.worldBound;
+
+            Vector2 worldPos = new Vector2(targetRect.xMin, targetRect.yMax);
+            Vector2 offset = new Vector2(rootMenu.resolvedStyle.marginLeft, rootMenu.resolvedStyle.marginTop);
+            Vector2 menuSize = rootMenu.worldBound.size;
+
+            Vector2 maxPos = worldPos + offset + menuSize;
+
+            // align root menu to the right side if it exceeds the bounds horizontally
+            if (maxPos.x > rootWorldBound.xMax)
+            {
+                worldPos.x = rootWorldBound.xMax - menuSize.x;
+            }
+
+            // align root menu to the bottom if it exceeds the bounds vertically
+            if (maxPos.y > rootWorldBound.yMax)
+            {
+                worldPos.y = rootWorldBound.yMax - menuSize.y;
+            }
+
+            foreach (Menu menu in rootMenu.subMenus.Values)
+            {
+                SetSubMenuPosition(menu, worldPos, in rootWorldBound);
+            }
+
             // detach all menus that have been attached while building
             rootMenu.DetachAll();
 
-            var localRect = root.WorldToLocal(targetRect);
+            Vector2 localPos = root.WorldToLocal(worldPos);
+            rootMenu.style.left = localPos.x;
+            rootMenu.style.top = localPos.y;
 
-            // set position of root menu
-            // right align if menus right bound exceeds the roots right bound
-            if (localRect.x + rootMenu.measuredWidth > root.resolvedStyle.width)
-                rootMenu.style.left = root.resolvedStyle.width - rootMenu.menuContainer.resolvedStyle.width;
-            else
-                rootMenu.style.left = localRect.xMin;
-
-            rootMenu.style.top = localRect.yMax;
             blockingLayer.Add(rootMenu);
+        }
+
+        private void SetSubMenuPosition(Menu menu, Vector2 parentWorldPosition, in Rect rootWorldBound)
+        {
+            Vector2 anchor = new Vector2(menu.target.localBound.xMax, menu.target.localBound.yMin);
+            Vector2 offset = new Vector2(menu.resolvedStyle.marginLeft, menu.resolvedStyle.marginTop);
+            Vector2 menuSize = menu.worldBound.size;
+
+            Vector2 maxPos = parentWorldPosition + anchor + offset + menuSize;
+
+            // position to the right side if menu exceeds bounds
+            if (maxPos.x > rootWorldBound.xMax)
+            {
+                menu.AddToClassList(menuRightwardsClassname);
+                anchor.x = menu.target.localBound.xMin - menuSize.x - offset.x;
+
+                // align to left border if adjusted menu exceeds left bounds
+                if (parentWorldPosition.x + anchor.x < 0)
+                {
+                    anchor.x = -parentWorldPosition.x;
+                }
+            }
+
+            // position upwards if menu exceeds bounds
+            if (maxPos.y > rootWorldBound.yMax)
+            {
+                menu.AddToClassList(menuUpwardsClassname);
+                anchor.y = menu.target.localBound.yMax - menuSize.y - offset.y;
+
+                // align to top border if adjusted menu exceeds top bounds
+                if (parentWorldPosition.y + anchor.y < 0)
+                {
+                    anchor.y = -parentWorldPosition.y;
+                }
+            }
+
+            menu.style.left = anchor.x;
+            menu.style.top = anchor.y;
+
+            foreach (Menu subMenu in menu.subMenus.Values)
+            {
+                SetSubMenuPosition(subMenu,  parentWorldPosition + anchor, rootWorldBound);
+            }
         }
 
         private Menu MakeMenu()
