@@ -1,30 +1,50 @@
-.fab-dropdown {
-    align-items: flex-start;
-    justify-content: flex-start;
-    position: absolute;
+:root{
+    --fab-dropdown-menu-border-width: 1px;    
+    --fab-dropdown-menu-padding: 2px;
+    --fab-dropdown-menu-vertical-offset: -3px;  /* -(border width + padding)*/
+    --fab-dropdown-menu-horizontal-offset: 0px;
+
+    --fab-dropdown-menu-border-radius: 0px;
+
+    --fab-dropdown-menu-min-width: 128px;
+    --fab-dropdown-menu-min-height: 20px;
+
+    --fab-dropdown-menu-bkg-color: white;
+    --fab-dropdown-menu-border-color: rgb(190, 190, 190);
 }
 
-.fab-dropdown__outer-container {
-    flex-direction: row;
+.fab-dropdown__menu {
+    position: absolute;
+    width: auto;
+    height: auto;
+
+    margin-left: var(--fab-dropdown-menu-horizontal-offset);
+    margin-top: var(--fab-dropdown-menu-vertical-offset);
 }
+
+.fab-dropdown__menu--depth0 {
+    margin: 0px;
+}
+
+.fab-dropdown__menu--rightwards{
+    margin-left: 0px;
+    margin-right: var(--fab-dropdown-menu-horizontal-offset);
+}
+
+.fab-dropdown__menu--upwards{
+    margin-top: 0px;
+    margin-bottom: var(--fab-dropdown-menu-horizontal-offset);
+}
+
 
 .fab-dropdown__menu-container {
-    min-width: 128px;
-    min-height: 20px;
-    background-color: rgb(255, 255, 255);
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-color: rgb(120, 120, 120);
-    border-right-color: rgb(120, 120, 120);
-    border-top-color: rgb(120, 120, 120);
-    border-bottom-color: rgb(120, 120, 120);
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    position: absolute;
+    min-width: var(--fab-dropdown-menu-min-width);
+    min-height: var(--fab-dropdown-menu-min-height);
+    background-color: var(--fab-dropdown-menu-bkg-color);
+    border-width: var(--fab-dropdown-menu-border-width);
+    border-color: var(--fab-dropdown-menu-border-color);
+    padding: var(--fab-dropdown-menu-padding);
+    border-radius: var(--fab-dropdown-menu-border-radius);
 }
 
 .fab-dropdown__item {
