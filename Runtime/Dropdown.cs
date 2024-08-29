@@ -452,7 +452,7 @@ namespace Fab.UITKDropdown
         /// <summary>
         /// Constructs the drop-down.
         /// </summary>
-        /// <param name="root">The root Element the drop-down will attach to.</param>
+        /// <param name="root">The root element the drop-down will attach to.</param>
         /// <param name="makeItem">Optional function to customize item appearance.</param>
         /// <param name="setItem">Optional function to customize how items display their content.</param>
         /// <param name="makeSeparator">Optional function to customize the separator appearance.</param>
@@ -466,6 +466,8 @@ namespace Fab.UITKDropdown
 
             this.root = root;
 
+            
+
             blockingLayer = new VisualElement()
             {
                 name = blockingLayerName
@@ -473,7 +475,9 @@ namespace Fab.UITKDropdown
             blockingLayer.StretchToParentSize();
 
 
-            blockingLayer.RegisterCallback<MouseDownEvent>(evt =>
+            //blockingLayer.pickingMode = PickingMode.Ignore;
+
+            blockingLayer.RegisterCallback<PointerDownEvent>(evt =>
             {
                 if (evt.target == blockingLayer)
                     Close();
