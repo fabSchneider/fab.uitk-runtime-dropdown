@@ -474,13 +474,19 @@ namespace Fab.UITKDropdown
             };
             blockingLayer.StretchToParentSize();
 
-
-            //blockingLayer.pickingMode = PickingMode.Ignore;
-
             blockingLayer.RegisterCallback<PointerDownEvent>(evt =>
             {
                 if (evt.target == blockingLayer)
+                {
                     Close();
+
+                    // resend the pointer event to pass it through the blocking layer to elements underneath
+                    using (PointerDownEvent pointerDownEvent = PointerDownEvent.GetPooled(evt))
+                    {
+                        root.panel.visualTree.SendEvent(pointerDownEvent);
+                    }
+                }
+
             });
             blockingLayer.RegisterCallback<KeyDownEvent>(evt =>
             {
