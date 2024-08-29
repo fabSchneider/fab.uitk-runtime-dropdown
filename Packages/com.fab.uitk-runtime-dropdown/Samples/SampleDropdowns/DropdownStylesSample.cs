@@ -11,13 +11,17 @@ namespace Fab.UITKDropdown.Sample
         [SerializeField]
         private ThemeStyleSheet[] themes;
 
+        private ThemeStyleSheet defaultTheme;
+
         private DropdownMenu menu;
 
         private Dropdown dropdown;
 
         private void Start()
         {
-            var root = uiDoc.rootVisualElement;
+            defaultTheme = uiDoc.panelSettings.themeStyleSheet;
+
+            VisualElement root = uiDoc.rootVisualElement;
 
             dropdown = new Dropdown(root);
 
@@ -30,9 +34,15 @@ namespace Fab.UITKDropdown.Sample
                     action => uiDoc.panelSettings.themeStyleSheet == theme ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
             }
 
-            var btn = root.Q<Button>(name: "dropdown-style-btn");
+            Button btn = root.Q<Button>(name: "dropdown-style-btn");
             btn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(menu, btn.worldBound, evt);
 
+        }
+
+        private void OnDestroy()
+        {
+            // Reset to default theme
+            uiDoc.panelSettings.themeStyleSheet = defaultTheme;
         }
     }
 }
