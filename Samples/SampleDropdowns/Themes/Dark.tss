@@ -14,7 +14,7 @@
 
 .fab-dropdown{
     --fab-dropdown-menu-horizontal-offset: 2px;
-
+    --fab-dropdown-menu-padding: 4px;
     --fab-dropdown-menu-border-radius: 6px;
 
     --fab-dropdown-menu-bkg-color: var(--fab-dropdown-sample-button-color);
