@@ -24,7 +24,6 @@ namespace Fab.UITKDropdown
         private static readonly string separatorLineClassname = separatorClassname + "__line";
 
         private static readonly string openedItemClassname = subItemClassname + "--opened";
-        private static readonly string hoveredItemClassname = itemClassname + "--hovered";
 
         private static readonly string hiddenItemClassname = itemClassname + "--hidden";
         private static readonly string checkedItemClassname = itemClassname + "--checked";
@@ -62,15 +61,78 @@ namespace Fab.UITKDropdown
             {
                 target.RegisterCallback<PointerEnterEvent>(OnEnter);
                 target.RegisterCallback<PointerLeaveEvent>(OnLeave);
-                target.RegisterCallback<KeyUpEvent>(OnKeyUp);
-                target.RegisterCallback<MouseUpEvent>(OnMouseUp);
+                target.RegisterCallback<PointerUpEvent>(OnPointerUp);
+
+                target.RegisterCallback<NavigationSubmitEvent>(OnNavigationSubmit, TrickleDown.TrickleDown);
+                target.RegisterCallback<NavigationMoveEvent>(OnNavigationMove, TrickleDown.TrickleDown);
             }
             protected override void UnregisterCallbacksFromTarget()
             {
                 target.UnregisterCallback<PointerEnterEvent>(OnEnter);
                 target.UnregisterCallback<PointerLeaveEvent>(OnLeave);
-                target.UnregisterCallback<KeyUpEvent>(OnKeyUp);
-                target.UnregisterCallback<MouseUpEvent>(OnMouseUp);
+                target.UnregisterCallback<PointerUpEvent>(OnPointerUp);
+
+                target.UnregisterCallback<NavigationSubmitEvent>(OnNavigationSubmit, TrickleDown.TrickleDown);
+                target.UnregisterCallback<NavigationMoveEvent>(OnNavigationMove, TrickleDown.TrickleDown);
+            }
+
+            protected virtual void OnNavigationSubmit(NavigationSubmitEvent evt)
+            {
+                ExecuteIfEnabled();
+            }
+
+            protected virtual void OnNavigationMove(NavigationMoveEvent evt)
+            {
+                // prevent default focus behavior
+                evt.StopPropagation();
+                evt.PreventDefault();
+
+                switch (evt.direction)
+                {
+                    case NavigationMoveEvent.Direction.Left:
+                        if (menu.parentMenu != null)
+                        {
+                            menu.parentMenu.CloseSubMenus();
+                            menu.target.Focus();
+                        }
+                        break;
+                    case NavigationMoveEvent.Direction.Up:
+                    case NavigationMoveEvent.Direction.Previous:
+                        // find previous focusable element
+                        int idx = target.parent.IndexOf(target);
+                        int prevIdx = (target.parent.childCount + idx - 1) % target.parent.childCount;
+                        while(idx != prevIdx)
+                        {
+                            VisualElement prevElement = target.parent[prevIdx];
+                            if (prevElement.focusable)
+                            {
+                                prevElement.Focus();
+                                break;
+                            }
+                            prevIdx = (target.parent.childCount + prevIdx - 1) % target.parent.childCount;
+                        }
+                        break;
+                    case NavigationMoveEvent.Direction.Right:
+                        break;
+                    case NavigationMoveEvent.Direction.Down:
+                    case NavigationMoveEvent.Direction.Next:
+                        // find next focusable element
+                        idx = target.parent.IndexOf(target);
+                        int nextIdx = (idx + 1) % target.parent.childCount;
+                        while (idx != nextIdx)
+                        {
+                            VisualElement nextElement = target.parent[nextIdx];
+                            if (nextElement.focusable)
+                            {
+                                nextElement.Focus();
+                                break;
+                            }
+                            nextIdx = (nextIdx + 1) % target.parent.childCount;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
             protected virtual void OnEnter(PointerEnterEvent evt)
@@ -84,28 +146,18 @@ namespace Fab.UITKDropdown
                 if (menu.openSubMenu != null && menu.openSubMenu.target != target)
                 {
                     menu.openSubMenu.target.RemoveFromClassList(openedItemClassname);
-                    menu.openSubMenu.target.RemoveFromClassList(hoveredItemClassname);
                 }
 
-                target.AddToClassList(hoveredItemClassname);
                 target.Focus();
             }
 
             protected virtual void OnLeave(PointerLeaveEvent evt)
             {
                 cancel = true;
-                target.RemoveFromClassList(hoveredItemClassname);
+                target.Blur();
             }
 
-            protected virtual void OnKeyUp(KeyUpEvent evt)
-            {
-                if (evt.keyCode == KeyCode.Return)
-                    ExecuteIfEnabled();
-                else if (evt.keyCode == KeyCode.Escape)
-                    menu.dropdown.Close();
-            }
-
-            protected virtual void OnMouseUp(MouseUpEvent evt)
+            protected virtual void OnPointerUp(PointerUpEvent evt)
             {
                 evt.StopPropagation();
                 target.Blur();
@@ -179,16 +231,48 @@ namespace Fab.UITKDropdown
                 menu.OpenSubMenu(subMenu);
             }
 
-            protected override void OnEnter(PointerEnterEvent evt)
+            protected override void OnNavigationSubmit(NavigationSubmitEvent evt)
             {
-                base.OnEnter(evt);
+                base.OnNavigationSubmit(evt);
+                if (!Enabled)
+                    return;
+
+                // select first item of sub menu
+                if (subMenu.menuContainer.childCount > 0)
+                {
+                    subMenu.menuContainer[0].Focus();
+                }
             }
 
-            protected override void OnLeave(PointerLeaveEvent evt)
+            protected override void OnNavigationMove(NavigationMoveEvent evt)
             {
-                base.OnLeave(evt);
+                base.OnNavigationMove(evt);
+
+                if (!Enabled)
+                    return;
+
+
+                switch (evt.direction)
+                {
+                    case NavigationMoveEvent.Direction.Right:
+                        ExecuteAction();
+                        // select first item of sub menu
+                        if (subMenu.menuContainer.childCount > 0)
+                        {
+                            subMenu.menuContainer[0].Focus();
+                        }
+                        break;
+                    case NavigationMoveEvent.Direction.Up:
+                    case NavigationMoveEvent.Direction.Previous:
+                    case NavigationMoveEvent.Direction.Down:
+                    case NavigationMoveEvent.Direction.Next:
+                        menu.CloseSubMenus();
+                        break;
+                    default:
+                        break;
+                }
             }
-            
+
             public void SetEnabled()
             {
                 Enabled = true;
@@ -311,8 +395,9 @@ namespace Fab.UITKDropdown
 
                 Add(menu);
 
+                // HACK: add menu open style with a small delay to allow
+                // for fade in transition styles to work
                 menu.schedule.Execute(() => menu.AddToClassList(menuOpenClassname)).ExecuteLater(10);
-             
             }
 
             public void CloseSubMenus()
@@ -324,7 +409,6 @@ namespace Fab.UITKDropdown
                 {
                     var ve = openSubMenu.menuContainer[i];
                     ve.RemoveFromClassList(openedItemClassname);
-                    ve.RemoveFromClassList(hoveredItemClassname);
                 }
 
                 openSubMenu.RemoveFromHierarchy();
@@ -336,7 +420,7 @@ namespace Fab.UITKDropdown
             private void CloseConsecutive()
             {
                 target?.RemoveFromClassList(openedItemClassname);
-                if(openSubMenu != null)
+                if (openSubMenu != null)
                 {
                     openSubMenu.RemoveFromClassList(menuOpenClassname);
                     openSubMenu.RemoveFromHierarchy();
@@ -448,7 +532,6 @@ namespace Fab.UITKDropdown
         /// </summary>
         public long SubMenuOpenDelay { get; set; } = 200;
 
-
         /// <summary>
         /// Constructs the drop-down.
         /// </summary>
@@ -466,16 +549,19 @@ namespace Fab.UITKDropdown
 
             this.root = root;
 
-            
-
             blockingLayer = new VisualElement()
             {
-                name = blockingLayerName
+                name = blockingLayerName,
+                focusable = true,
+                // set tab index to -1 to avoid blocking layer
+                // being picked by the focus ring
+                tabIndex = -1
             };
             blockingLayer.StretchToParentSize();
 
             blockingLayer.RegisterCallback<PointerDownEvent>(evt =>
             {
+
                 if (evt.target == blockingLayer)
                 {
                     Close();
@@ -486,12 +572,41 @@ namespace Fab.UITKDropdown
                         root.panel.visualTree.SendEvent(pointerDownEvent);
                     }
                 }
-
             });
-            blockingLayer.RegisterCallback<KeyDownEvent>(evt =>
+
+            blockingLayer.RegisterCallback<NavigationCancelEvent>(evt =>
             {
-                if (evt.keyCode == KeyCode.Escape)
-                    Close();
+                Close();
+            }, TrickleDown.TrickleDown);
+
+            blockingLayer.RegisterCallback<NavigationMoveEvent>(evt =>
+            {
+                if (evt.target != blockingLayer)
+                    return;
+
+                // prevent default focusing behavior
+                evt.StopPropagation();
+                evt.PreventDefault();
+
+                if (rootMenu.menuContainer.childCount > 0)
+                {
+                    // focus first or last item in the root menu
+                    // depending on the direction of the navigation event
+                    if (evt.direction == NavigationMoveEvent.Direction.Down)
+                    {
+                        rootMenu.menuContainer[0].Focus();
+                    }
+                    else if (evt.direction == NavigationMoveEvent.Direction.Up)
+                    {
+                        rootMenu.menuContainer[rootMenu.menuContainer.childCount - 1].Focus();
+                    }
+                }
+            }, TrickleDown.TrickleDown);
+
+            blockingLayer.RegisterCallback<PointerOverEvent>(evt =>
+            {
+                if (evt.target == blockingLayer)
+                    blockingLayer.Focus();
             });
 
             MakeItem = makeItem == null ? MakeDefaultItem : makeItem;
@@ -539,6 +654,11 @@ namespace Fab.UITKDropdown
 
             rootMenu.RegisterCallback<GeometryChangedEvent>(OnBuildComplete);
             root.Add(blockingLayer);
+
+            // we have to blur the currently focused element
+            // otherwise focusing of the blocking layer does not work reliably
+            root.focusController.focusedElement?.Blur();
+            blockingLayer.Focus();
         }
 
         /// <summary>
@@ -554,7 +674,10 @@ namespace Fab.UITKDropdown
         /// </summary>
         public void Close()
         {
-            rootMenu?.CloseSubMenus();
+            if (rootMenu != null)
+            {
+                rootMenu.CloseSubMenus();
+            }
             blockingLayer.RemoveFromHierarchy();
         }
 
@@ -656,10 +779,9 @@ namespace Fab.UITKDropdown
 
             foreach (Menu subMenu in menu.subMenus.Values)
             {
-                SetSubMenuPosition(subMenu,  parentWorldPosition + anchor, rootWorldBound);
+                SetSubMenuPosition(subMenu, parentWorldPosition + anchor, rootWorldBound);
             }
         }
-
         private Menu MakeMenu()
         {
             return new Menu(this);
@@ -700,9 +822,6 @@ namespace Fab.UITKDropdown
             target.RemoveFromClassList(disabledItemClassname);
 
             target.RemoveFromClassList(openedItemClassname);
-            target.RemoveFromClassList(hoveredItemClassname);
-
-
         }
 
         /// <summary>
