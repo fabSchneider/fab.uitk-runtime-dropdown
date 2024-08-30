@@ -45,7 +45,24 @@ namespace Fab.UITKDropdown
             public bool Enabled
             {
                 get => enabled;
-                protected set => enabled = value;
+                set
+                {
+                    enabled = value;
+                    target.EnableInClassList(disabledItemClassname, !enabled);
+                }
+            }
+
+            private bool hidden;
+
+            public bool Hidden
+            {
+                get => hidden;
+                set
+                {
+                    hidden = value;
+                    target.EnableInClassList(hiddenItemClassname, hidden);
+                    target.focusable = !hidden;
+                }
             }
 
             public abstract void Reset();
@@ -101,7 +118,7 @@ namespace Fab.UITKDropdown
                         // find previous focusable element
                         int idx = target.parent.IndexOf(target);
                         int prevIdx = (target.parent.childCount + idx - 1) % target.parent.childCount;
-                        while(idx != prevIdx)
+                        while (idx != prevIdx)
                         {
                             VisualElement prevElement = target.parent[prevIdx];
                             if (prevElement.focusable)
@@ -178,11 +195,12 @@ namespace Fab.UITKDropdown
 
             public ActionItemManipulator() { }
 
-            public void Set(Action action, Menu menu, bool enabled)
+            public void Set(Action action, Menu menu, bool enabled, bool hidden)
             {
                 this.action = action;
                 this.menu = menu;
-                this.Enabled = enabled;
+                Enabled = enabled;
+                Hidden = hidden;
             }
 
             public override void Reset()
@@ -190,6 +208,7 @@ namespace Fab.UITKDropdown
                 menu = null;
                 action = null;
                 Enabled = false;
+                Hidden = false;
             }
 
             protected override void ExecuteAction()
@@ -204,11 +223,12 @@ namespace Fab.UITKDropdown
 
             public SubItemManipulator() { }
 
-            public void Set(Menu menu, Menu subMenu, bool enabled)
+            public void Set(Menu menu, Menu subMenu)
             {
                 this.menu = menu;
                 this.subMenu = subMenu;
-                this.Enabled = enabled;
+                Enabled = true;
+                Hidden = false;
             }
 
             public override void Reset()
@@ -216,6 +236,7 @@ namespace Fab.UITKDropdown
                 menu = null;
                 subMenu = null;
                 Enabled = false;
+                Hidden = false;
             }
 
             protected override void Activate()
@@ -271,18 +292,6 @@ namespace Fab.UITKDropdown
                     default:
                         break;
                 }
-            }
-
-            public void SetEnabled()
-            {
-                Enabled = true;
-                target.RemoveFromClassList(disabledItemClassname);
-            }
-
-            public void SetDisabled()
-            {
-                Enabled = false;
-                target.AddToClassList(disabledItemClassname);
             }
         }
         private class Menu : VisualElement
@@ -438,9 +447,10 @@ namespace Fab.UITKDropdown
                     if (item is DropdownMenuAction action)
                     {
                         var m = dropdown.actionItemPool.GetPooled();
+
                         m.Set(action.Execute, this,
-                            action.status != DropdownMenuAction.Status.Disabled &&
-                            action.status != DropdownMenuAction.Status.Hidden);
+                            !action.status.HasFlag(DropdownMenuAction.Status.Disabled),
+                            action.status.HasFlag(DropdownMenuAction.Status.Hidden));
                         dropdown.SetItem(m.target, item, path, level);
                         dropdown.SetItemStatus(m.target, action.status);
                         actionItems.Add(m);
@@ -462,7 +472,7 @@ namespace Fab.UITKDropdown
                         var m = dropdown.subItemPool.GetPooled();
                         subMenu = dropdown.subMenuPool.GetPooled();
                         subMenu.Set(this, m.target);
-                        m.Set(this, subMenu, true);
+                        m.Set(this, subMenu);
                         dropdown.SetItem(m.target, item, path, level);
 
                         menuContainer.Add(m.target);
@@ -484,32 +494,56 @@ namespace Fab.UITKDropdown
                 RemoveFromHierarchy();
             }
 
-            public bool UpdateSubItemsEnabledState()
+            public DropdownMenuAction.Status SetSubItemStates()
             {
+
                 bool hasEnabledItems = false;
+                bool hasVisibleItems = false;
                 foreach (var item in actionItems)
                 {
-                    if (item.Enabled)
+                    if (!item.Hidden)
+                    {
+                        hasVisibleItems = true;
+                    }
+
+                    // hidden items are treated like disabled items
+                    if (item.Enabled && !item.Hidden)
                     {
                         hasEnabledItems = true;
-                        break;
                     }
+
+                    if (hasEnabledItems && hasVisibleItems)
+                        break;
                 }
 
                 foreach (var subItem in subItems)
                 {
-                    if (subItem.subMenu.UpdateSubItemsEnabledState())
+                    DropdownMenuAction.Status subStatus = subItem.subMenu.SetSubItemStates();
+
+                    if (subStatus == DropdownMenuAction.Status.Hidden)
                     {
-                        hasEnabledItems = true;
-                        subItem.SetEnabled();
+                        subItem.Hidden = true;
+                    }
+                    else if (subStatus == DropdownMenuAction.Status.Disabled)
+                    {
+                        subItem.Enabled = false;
+                        hasVisibleItems = true;
                     }
                     else
                     {
-                        subItem.SetDisabled();
+                        hasEnabledItems = true;
+                        hasVisibleItems = true;
                     }
                 }
 
-                return hasEnabledItems;
+                if (!hasVisibleItems)
+                    return DropdownMenuAction.Status.Hidden;
+
+                if (!hasEnabledItems)
+                    return DropdownMenuAction.Status.Disabled;
+
+
+                return DropdownMenuAction.Status.Normal;
             }
         }
 
@@ -698,7 +732,7 @@ namespace Fab.UITKDropdown
                     rootMenu.AddItem(item, a.name.Split('/'), 0);
             }
 
-            rootMenu.UpdateSubItemsEnabledState();
+            rootMenu.SetSubItemStates();
         }
 
         private void OnBuildComplete(GeometryChangedEvent evt)
@@ -865,8 +899,6 @@ namespace Fab.UITKDropdown
 
         private void SetItemStatus(VisualElement ve, DropdownMenuAction.Status status)
         {
-            ve.focusable = true;
-
             switch (status)
             {
                 case DropdownMenuAction.Status.None:
@@ -889,7 +921,6 @@ namespace Fab.UITKDropdown
                     break;
                 case DropdownMenuAction.Status.Hidden:
                     ve.AddToClassList(hiddenItemClassname);
-                    ve.focusable = false;
                     break;
                 default:
                     break;
