@@ -5,6 +5,8 @@
     <ui:VisualElement class="toolbar">
         <ui:Button text="Open" display-tooltip-when-elided="true" name="dropdown-btn" class="toolbar__button" />
         <ui:VisualElement class="toolbar__divider" style="flex-grow: 1;" />
+        <ui:Button text="Empty" display-tooltip-when-elided="true" name="empty-dropdown-btn" class="toolbar__button" />
+        <ui:VisualElement class="toolbar__divider" style="flex-grow: 1;" />
         <ui:Button text="Open Custom" display-tooltip-when-elided="true" name="custom-dropdown-btn" class="toolbar__button" />
         <ui:VisualElement class="toolbar__divider" style="flex-grow: 1;" />
         <ui:Button text="Style" display-tooltip-when-elided="true" name="dropdown-style-btn" class="toolbar__button" />

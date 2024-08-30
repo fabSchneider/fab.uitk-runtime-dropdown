@@ -1,6 +1,6 @@
 .fab-dropdown {
     --fab-dropdown-menu-border-width: 1px;
-    --fab-dropdown-menu-padding: 4px;
+    --fab-dropdown-menu-padding: 3px;
     --fab-dropdown-menu-vertical-offset: -5px;
     --fab-dropdown-menu-horizontal-offset: 0px;
     --fab-dropdown-menu-border-radius: 4px;

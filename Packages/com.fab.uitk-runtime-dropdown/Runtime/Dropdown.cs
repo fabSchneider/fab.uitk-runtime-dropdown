@@ -865,6 +865,8 @@ namespace Fab.UITKDropdown
 
         private void SetItemStatus(VisualElement ve, DropdownMenuAction.Status status)
         {
+            ve.focusable = true;
+
             switch (status)
             {
                 case DropdownMenuAction.Status.None:
@@ -887,6 +889,7 @@ namespace Fab.UITKDropdown
                     break;
                 case DropdownMenuAction.Status.Hidden:
                     ve.AddToClassList(hiddenItemClassname);
+                    ve.focusable = false;
                     break;
                 default:
                     break;
