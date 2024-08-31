@@ -9,8 +9,6 @@ namespace Fab.UITKDropdown
     {
         private static readonly string classname = "fab-dropdown";
 
-        private static readonly string blockingLayerName = "dropdown-blocking-layer";
-
         private static readonly string menuClassname = classname + "__menu";
         private static readonly string menuOpenClassname = menuClassname + "--open";
         private static readonly string menuDepthClassname = menuClassname + "--depth";
@@ -548,7 +546,7 @@ namespace Fab.UITKDropdown
         }
 
         private VisualElement root;
-        private VisualElement blockingLayer;
+        private VisualElement dropdownLayer;
         private Menu rootMenu;
 
         private Rect targetRect;
@@ -583,20 +581,35 @@ namespace Fab.UITKDropdown
 
             this.root = root;
 
-            blockingLayer = new VisualElement()
+            SetupDropdownLayer();
+
+            MakeItem = makeItem == null ? MakeDefaultItem : makeItem;
+            SetItem = setItem == null ? SetDefaultItem : setItem;
+
+            actionItemPool = new ObjectPool<ActionItemManipulator>(32, true, MakeActionItem, ResetItem);
+            subItemPool = new ObjectPool<SubItemManipulator>(32, true, MakeSubItem, ResetItem);
+
+            separatorPool = new ObjectPool<VisualElement>(32, true, makeSeparator == null ? MakeDefaultSeparator : makeSeparator);
+            subMenuPool = new ObjectPool<Menu>(16, true, MakeMenu);
+        }
+
+        private void SetupDropdownLayer()
+        {
+            dropdownLayer = new VisualElement()
             {
-                name = blockingLayerName,
                 focusable = true,
                 // set tab index to -1 to avoid blocking layer
                 // being picked by the focus ring
                 tabIndex = -1
             };
-            blockingLayer.StretchToParentSize();
+            dropdownLayer.StretchToParentSize();
+            dropdownLayer.AddToClassList(classname);
 
-            blockingLayer.RegisterCallback<PointerDownEvent>(evt =>
+            // closing when the pointer is down outside of any menu
+            dropdownLayer.RegisterCallback<PointerDownEvent>(evt =>
             {
 
-                if (evt.target == blockingLayer)
+                if (evt.target == dropdownLayer)
                 {
                     Close();
 
@@ -608,14 +621,18 @@ namespace Fab.UITKDropdown
                 }
             });
 
-            blockingLayer.RegisterCallback<NavigationCancelEvent>(evt =>
+            // default closing behavior when pressing the navigation cancel event
+            dropdownLayer.RegisterCallback<NavigationCancelEvent>(evt =>
             {
                 Close();
             }, TrickleDown.TrickleDown);
 
-            blockingLayer.RegisterCallback<NavigationMoveEvent>(evt =>
+            // override default focus behavior
+            // if no item is focused using up or down navigation will 
+            // focus the first or last item in the root menu
+            dropdownLayer.RegisterCallback<NavigationMoveEvent>(evt =>
             {
-                if (evt.target != blockingLayer)
+                if (evt.target != dropdownLayer)
                     return;
 
                 // prevent default focusing behavior
@@ -637,20 +654,12 @@ namespace Fab.UITKDropdown
                 }
             }, TrickleDown.TrickleDown);
 
-            blockingLayer.RegisterCallback<PointerOverEvent>(evt =>
+            // take away focus from the any dropdown item as the pointer moves out of the menu
+            dropdownLayer.RegisterCallback<PointerOverEvent>(evt =>
             {
-                if (evt.target == blockingLayer)
-                    blockingLayer.Focus();
+                if (evt.target == dropdownLayer)
+                    dropdownLayer.Focus();
             });
-
-            MakeItem = makeItem == null ? MakeDefaultItem : makeItem;
-            SetItem = setItem == null ? SetDefaultItem : setItem;
-
-            actionItemPool = new ObjectPool<ActionItemManipulator>(32, true, MakeActionItem, ResetItem);
-            subItemPool = new ObjectPool<SubItemManipulator>(32, true, MakeSubItem, ResetItem);
-
-            separatorPool = new ObjectPool<VisualElement>(32, true, makeSeparator == null ? MakeDefaultSeparator : makeSeparator);
-            subMenuPool = new ObjectPool<Menu>(16, true, MakeMenu);
         }
 
         /// <summary>
@@ -661,7 +670,7 @@ namespace Fab.UITKDropdown
             if (menu == null)
                 throw new ArgumentNullException(nameof(menu));
 
-            if (blockingLayer.parent != null)
+            if (dropdownLayer.parent != null)
                 Close();
 
             targetRect = targetWorldBound;
@@ -687,12 +696,12 @@ namespace Fab.UITKDropdown
             Build(menu);
 
             rootMenu.RegisterCallback<GeometryChangedEvent>(OnBuildComplete);
-            root.Add(blockingLayer);
+            root.Add(dropdownLayer);
 
             // we have to blur the currently focused element
             // otherwise focusing of the blocking layer does not work reliably
             root.focusController.focusedElement?.Blur();
-            blockingLayer.Focus();
+            dropdownLayer.Focus();
         }
 
         /// <summary>
@@ -712,18 +721,17 @@ namespace Fab.UITKDropdown
             {
                 rootMenu.CloseSubMenus();
             }
-            blockingLayer.RemoveFromHierarchy();
+            dropdownLayer.RemoveFromHierarchy();
         }
 
         private void Build(DropdownMenu menu)
         {
             rootMenu?.ReturnToPool();
             rootMenu = subMenuPool.GetPooled();
-            rootMenu.AddToClassList(classname);
             rootMenu.AddToClassList(menuDepthClassname + "0");
             rootMenu.schedule.Execute(() => rootMenu.AddToClassList(menuOpenClassname)).ExecuteLater(10);
 
-            blockingLayer.Add(rootMenu);
+            dropdownLayer.Add(rootMenu);
             foreach (var item in menu.MenuItems())
             {
                 if (item is DropdownMenuSeparator s)
@@ -771,7 +779,7 @@ namespace Fab.UITKDropdown
             rootMenu.style.left = localPos.x;
             rootMenu.style.top = localPos.y;
 
-            blockingLayer.Add(rootMenu);
+            dropdownLayer.Add(rootMenu);
         }
 
         private void SetSubMenuPosition(Menu menu, Vector2 parentWorldPosition, in Rect rootWorldBound)
