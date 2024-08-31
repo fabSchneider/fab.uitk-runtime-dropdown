@@ -565,6 +565,45 @@ namespace Fab.UITKDropdown
         public long SubMenuOpenDelay { get; set; } = 200;
 
         /// <summary>
+        /// Creates a default menu item.
+        /// </summary>
+        public static VisualElement MakeDefaultItem()
+        {
+            VisualElement ve = new VisualElement();
+            VisualElement icon = new VisualElement() { name = "icon" };
+            icon.AddToClassList(itemIconClassname);
+            ve.Add(icon);
+            VisualElement text = new Label() { name = "text" };
+            text.AddToClassList(itemTextClassname);
+            ve.Add(text);
+            VisualElement arrow = new VisualElement() { name = "arrow" };
+            arrow.AddToClassList(itemArrowClassname);
+            ve.Add(arrow);
+            return ve;
+        }
+
+        /// <summary>
+        /// Default method for setting menu items. 
+        /// </summary>
+        public static void SetDefaultItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
+        {
+            ve.Q<Label>(name: "text").text = path[level];
+        }
+
+        /// <summary>
+        /// Creates a default menu item.
+        /// </summary>
+        public static VisualElement MakeDefaultSeparator()
+        {
+            VisualElement ve = new VisualElement();
+            ve.AddToClassList(separatorClassname);
+            VisualElement separator = new VisualElement();
+            separator.AddToClassList(separatorLineClassname);
+            ve.Add(separator);
+            return ve;
+        }
+
+        /// <summary>
         /// Constructs the drop-down.
         /// </summary>
         /// <param name="root">The root element the drop-down will attach to.</param>
@@ -591,6 +630,68 @@ namespace Fab.UITKDropdown
 
             separatorPool = new ObjectPool<VisualElement>(32, true, makeSeparator == null ? MakeDefaultSeparator : makeSeparator);
             subMenuPool = new ObjectPool<Menu>(16, true, MakeMenu);
+        }
+
+        /// <summary>
+        /// Opens the drop-down anchored to the bottom border of the target world bounds.
+        /// </summary>
+        public void Open(DropdownMenu menu, Rect targetWorldBound, EventBase evt = null)
+        {
+            if (menu == null)
+                throw new ArgumentNullException(nameof(menu));
+
+            if (dropdownLayer.parent != null)
+                Close();
+
+            targetRect = targetWorldBound;
+
+            // Dropdown menu only supports Mouse Events
+            // In case the incoming event is a pointer event we need to
+            // synthesize a new mouse event from the pointer event
+            if (evt is IPointerEvent pointerEvent)
+            {
+                using var mouseEvt = MouseDownEvent.GetPooled(pointerEvent.position, 0, 1, pointerEvent.deltaPosition, pointerEvent.modifiers);
+                menu.PrepareForDisplay(mouseEvt);
+            }
+            else if (evt == null)
+            {
+                using var mouseEvt = MouseDownEvent.GetPooled(targetWorldBound.position, 0, 1, Vector2.zero);
+                menu.PrepareForDisplay(mouseEvt);
+            }
+            else
+            {
+                menu.PrepareForDisplay(evt);
+            }
+
+            Build(menu);
+
+            rootMenu.RegisterCallback<GeometryChangedEvent>(OnBuildComplete);
+            root.Add(dropdownLayer);
+
+            // we have to blur the currently focused element
+            // otherwise focusing of the blocking layer does not work reliably
+            root.focusController.focusedElement?.Blur();
+            dropdownLayer.Focus();
+        }
+
+        /// <summary>
+        /// Opens the drop-down at the given world position.
+        /// </summary>
+        public void Open(DropdownMenu menu, Vector2 worldPosition, EventBase evt = null)
+        {
+            Open(menu, new Rect(worldPosition, Vector2.zero), evt);
+        }
+
+        /// <summary>
+        /// Closes the drop-down.
+        /// </summary>
+        public void Close()
+        {
+            if (rootMenu != null)
+            {
+                rootMenu.CloseSubMenus();
+            }
+            dropdownLayer.RemoveFromHierarchy();
         }
 
         private void SetupDropdownLayer()
@@ -660,68 +761,6 @@ namespace Fab.UITKDropdown
                 if (evt.target == dropdownLayer)
                     dropdownLayer.Focus();
             });
-        }
-
-        /// <summary>
-        /// Opens the drop-down anchored to the bottom border of the target world bounds.
-        /// </summary>
-        public void Open(DropdownMenu menu, Rect targetWorldBound, EventBase evt = null)
-        {
-            if (menu == null)
-                throw new ArgumentNullException(nameof(menu));
-
-            if (dropdownLayer.parent != null)
-                Close();
-
-            targetRect = targetWorldBound;
-
-            // Dropdown menu only supports Mouse Events
-            // In case the incoming event is a pointer event we need to
-            // synthesize a new mouse event from the pointer event
-            if (evt is IPointerEvent pointerEvent)
-            {
-                using var mouseEvt = MouseDownEvent.GetPooled(pointerEvent.position, 0, 1, pointerEvent.deltaPosition, pointerEvent.modifiers);
-                menu.PrepareForDisplay(mouseEvt);
-            }
-            else if (evt == null)
-            {
-                using var mouseEvt = MouseDownEvent.GetPooled(targetWorldBound.position, 0, 1, Vector2.zero);
-                menu.PrepareForDisplay(mouseEvt);
-            }
-            else
-            {
-                menu.PrepareForDisplay(evt);
-            }
-
-            Build(menu);
-
-            rootMenu.RegisterCallback<GeometryChangedEvent>(OnBuildComplete);
-            root.Add(dropdownLayer);
-
-            // we have to blur the currently focused element
-            // otherwise focusing of the blocking layer does not work reliably
-            root.focusController.focusedElement?.Blur();
-            dropdownLayer.Focus();
-        }
-
-        /// <summary>
-        /// Opens the drop-down at the given world position.
-        /// </summary>
-        public void Open(DropdownMenu menu, Vector2 worldPosition, EventBase evt = null)
-        {
-            Open(menu, new Rect(worldPosition, Vector2.zero), evt);
-        }
-
-        /// <summary>
-        /// Closes the drop-down.
-        /// </summary>
-        public void Close()
-        {
-            if (rootMenu != null)
-            {
-                rootMenu.CloseSubMenus();
-            }
-            dropdownLayer.RemoveFromHierarchy();
         }
 
         private void Build(DropdownMenu menu)
@@ -824,6 +863,7 @@ namespace Fab.UITKDropdown
                 SetSubMenuPosition(subMenu, parentWorldPosition + anchor, rootWorldBound);
             }
         }
+        
         private Menu MakeMenu()
         {
             return new Menu(this);
@@ -864,45 +904,6 @@ namespace Fab.UITKDropdown
             target.RemoveFromClassList(disabledItemClassname);
 
             target.RemoveFromClassList(openedItemClassname);
-        }
-
-        /// <summary>
-        /// Creates a default menu item.
-        /// </summary>
-        public static VisualElement MakeDefaultItem()
-        {
-            VisualElement ve = new VisualElement();
-            VisualElement icon = new VisualElement() { name = "icon" };
-            icon.AddToClassList(itemIconClassname);
-            ve.Add(icon);
-            VisualElement text = new Label() { name = "text" };
-            text.AddToClassList(itemTextClassname);
-            ve.Add(text);
-            VisualElement arrow = new VisualElement() { name = "arrow" };
-            arrow.AddToClassList(itemArrowClassname);
-            ve.Add(arrow);
-            return ve;
-        }
-
-        /// <summary>
-        /// Default method for setting menu items. 
-        /// </summary>
-        public static void SetDefaultItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
-        {
-            ve.Q<Label>(name: "text").text = path[level];
-        }
-
-        /// <summary>
-        /// Creates a default menu item.
-        /// </summary>
-        public static VisualElement MakeDefaultSeparator()
-        {
-            VisualElement ve = new VisualElement();
-            ve.AddToClassList(separatorClassname);
-            VisualElement separator = new VisualElement();
-            separator.AddToClassList(separatorLineClassname);
-            ve.Add(separator);
-            return ve;
         }
 
         private void SetItemStatus(VisualElement ve, DropdownMenuAction.Status status)
