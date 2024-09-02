@@ -16,10 +16,10 @@ namespace Fab.UITKDropdown
         private static readonly string menuUpwardsClassname = menuClassname + "--upwards";
 
         private static readonly string menuContainerClassname = classname + "__menu-container";
-        private static readonly string itemClassname = classname + "__item";
-        private static readonly string subItemClassname = classname + "__sub-item";
+        private static readonly string itemClassname = classname + "__menu-item";
+        private static readonly string subItemClassname = classname + "__sub-menu-item";
         private static readonly string separatorClassname = classname + "__separator";
-        private static readonly string separatorLineClassname = separatorClassname + "__line";
+        private static readonly string separatorLineClassname = classname + "-separator__line";
 
         private static readonly string openedItemClassname = subItemClassname + "--opened";
 
@@ -27,9 +27,9 @@ namespace Fab.UITKDropdown
         private static readonly string checkedItemClassname = itemClassname + "--checked";
         private static readonly string disabledItemClassname = itemClassname + "--disabled";
 
-        public static readonly string itemIconClassname = itemClassname + "__icon";
-        public static readonly string itemTextClassname = itemClassname + "__text";
-        public static readonly string itemArrowClassname = itemClassname + "__arrow";
+        public static readonly string itemIconClassname = classname + "-menu-item__icon";
+        public static readonly string itemTextClassname = classname + "-menu-item__text";
+        public static readonly string itemArrowClassname = classname + "-menu-item__arrow";
 
         private abstract class ItemManipulator : Manipulator
         {

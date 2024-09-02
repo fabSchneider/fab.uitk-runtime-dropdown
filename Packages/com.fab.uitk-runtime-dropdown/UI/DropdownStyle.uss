@@ -1,7 +1,7 @@
 .fab-dropdown {
     --fab-dropdown-menu-border-width: 1px;
     --fab-dropdown-menu-padding: 3px;
-    --fab-dropdown-menu-vertical-offset: -5px;
+    --fab-dropdown-menu-vertical-offset: -4px;
     --fab-dropdown-menu-horizontal-offset: 0px;
     --fab-dropdown-menu-border-radius: 4px;
     --fab-dropdown-menu-min-width: 128px;
@@ -49,7 +49,7 @@
     border-radius: var(--fab-dropdown-menu-border-radius);
 }
 
-.fab-dropdown__item {
+.fab-dropdown__menu-item {
     height: 20px;
     justify-content: flex-start;
     flex-direction: row;
@@ -57,35 +57,35 @@
     border-radius: 1px;
 }
 
-.fab-dropdown__item:focus {
+.fab-dropdown__menu-item:focus {
     background-color: var(--fab-dropdown-item-focus-color);
 }
 
-.fab-dropdown__item--hidden {
+.fab-dropdown__menu-item--hidden {
     display: none;
 }
 
-.fab-dropdown__item--disabled {
+.fab-dropdown__menu-item--disabled {
     opacity: 0.3;
 }
 
-.fab-dropdown__item--checked > .fab-dropdown__item__icon {
+.fab-dropdown__menu-item--checked > .fab-dropdown-menu-item__icon {
     background-image: var(--fab-dropdown-checkmark);
     -unity-background-image-tint-color: var(--fab-dropdown-checkmark-color);
 }
 
-.fab-dropdown__sub-item--opened {
+.fab-dropdown__sub-menu-item--opened {
     background-color: var(--fab-dropdown-item-open-color);
 }
 
-.fab-dropdown__item__icon {
+.fab-dropdown-menu-item__icon {
     width: 12px;
     height: 12px;
     margin-left: 4px;
     margin-right: 6px;
 }
 
-.fab-dropdown__item__text {
+.fab-dropdown-menu-item__text {
     padding-left: 0;
     padding-right: 0;
     padding-top: 0;
@@ -95,7 +95,7 @@
     flex-grow: 1;
 }
 
-.fab-dropdown__item__arrow {
+.fab-dropdown-menu-item__arrow {
     width: 8px;
     height: 8px;
     margin-left: 8px;
@@ -103,7 +103,7 @@
     -unity-background-image-tint-color: var(--fab-dropdown-arrow-color);
 }
 
-.fab-dropdown__sub-item > .fab-dropdown__item__arrow {
+.fab-dropdown__sub-menu-item > .fab-dropdown-menu-item__arrow {
     background-image: var(--fab-dropdown-arrow);
 }
 
@@ -112,7 +112,7 @@
     justify-content: center;
 }
 
-.fab-dropdown__separator__line {
+.fab-dropdown-separator__line {
     height: 1px;
     background-color: var(--fab-dropdown-separator-color);
 }
