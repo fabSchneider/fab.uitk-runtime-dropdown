@@ -28,7 +28,7 @@ namespace Fab.UITKDropdown.Sample
 
         private ExampleOptions options = ExampleOptions.None;
 
-        private bool showHiddenAction; 
+        private bool showHiddenAction;
 
         private void Start()
         {
@@ -87,11 +87,10 @@ namespace Fab.UITKDropdown.Sample
             root.Q<VisualElement>(name: "dropdown-area").RegisterCallback<PointerUpEvent>(evt =>
             {
                 if (evt.button == 1)
-                {
                     dropdown.Open(pointerMenu, evt.position, evt);
-                }
             });
         }
+
 
         private void DoMenuAction(DropdownMenuAction action)
         {

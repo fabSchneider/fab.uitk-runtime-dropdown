@@ -51,3 +51,9 @@
 .toolbar__divider {
     width: 1px;
 }
+
+.custom-menu__heading{
+    font-size: 14px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+}
