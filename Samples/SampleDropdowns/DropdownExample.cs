@@ -48,6 +48,8 @@ namespace Fab.UITKDropdown.Sample
             btnMenu.AppendAction("Sub Menu/Action 5", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 6", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 7", DoMenuAction);
+            btnMenu.AppendAction("Sub Menu/Another Sub Menu/Yet Another Sub Menu/Action 8", DoMenuAction);
+            btnMenu.AppendAction("Sub Menu/Another Sub Menu/Yet Another Sub Menu/Action 9", DoMenuAction);
             btnMenu.AppendAction("DisabledSubMenu/Disabled", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
             btnMenu.AppendAction("DisabledSubMenu/Disabled as well", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
             btnMenu.AppendAction("DisabledSubMenu/Hidden", DoMenuAction, DropdownMenuAction.Status.Hidden);
