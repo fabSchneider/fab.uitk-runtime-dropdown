@@ -33,13 +33,12 @@ namespace Fab.UITKDropdown
 
         private abstract class ItemManipulator : Manipulator
         {
-            protected bool cancel;
+            protected bool cancel;     
             public Menu menu;
 
             protected ItemManipulator() { }
 
             private bool enabled;
-
             public bool Enabled
             {
                 get => enabled;
@@ -50,8 +49,8 @@ namespace Fab.UITKDropdown
                 }
             }
 
+            
             private bool hidden;
-
             public bool Hidden
             {
                 get => hidden;
@@ -72,6 +71,7 @@ namespace Fab.UITKDropdown
             }
 
             protected abstract void ExecuteAction();
+
             protected override void RegisterCallbacksOnTarget()
             {
                 target.RegisterCallback<PointerEnterEvent>(OnEnter);
@@ -81,6 +81,7 @@ namespace Fab.UITKDropdown
                 target.RegisterCallback<NavigationSubmitEvent>(OnNavigationSubmit, TrickleDown.TrickleDown);
                 target.RegisterCallback<NavigationMoveEvent>(OnNavigationMove, TrickleDown.TrickleDown);
             }
+
             protected override void UnregisterCallbacksFromTarget()
             {
                 target.UnregisterCallback<PointerEnterEvent>(OnEnter);
@@ -244,6 +245,7 @@ namespace Fab.UITKDropdown
 
                 ExecuteIfEnabled();
             }
+
             protected override void ExecuteAction()
             {
                 target.AddToClassList(openedItemClassname);
@@ -328,9 +330,6 @@ namespace Fab.UITKDropdown
                 this.parentMenu = parentMenu;
             }
 
-            /// <summary>
-            /// Returns this menu and all of its sub menus to the pool
-            /// </summary>
             public void ReturnToPool()
             {
                 // return actionItems to pool
@@ -492,6 +491,7 @@ namespace Fab.UITKDropdown
                     subMenu.AddItem(item, path, level + 1);
                 }
             }
+           
             public void DetachAll()
             {
                 foreach (var submenu in subMenus.Values)
@@ -499,7 +499,7 @@ namespace Fab.UITKDropdown
 
                 RemoveFromHierarchy();
             }
-
+            
             public DropdownMenuAction.Status SetSubItemStates()
             {
                 bool hasEnabledItems = false;
@@ -611,7 +611,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Constructs the drop-down.
+        /// Constructs the dropdown.
         /// </summary>
         /// <param name="root">The root element the drop-down will attach to.</param>
         /// <param name="makeItem">Optional function to customize item appearance.</param>
@@ -687,7 +687,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Opens the drop-down at the given world position.
+        /// Opens the dropdown at the given world position.
         /// </summary>
         public void Open(DropdownMenu menu, Vector2 worldPosition, EventBase evt = null)
         {
@@ -695,7 +695,7 @@ namespace Fab.UITKDropdown
         }
 
         /// <summary>
-        /// Closes the drop-down.
+        /// Closes the dropdown.
         /// </summary>
         public void Close()
         {
