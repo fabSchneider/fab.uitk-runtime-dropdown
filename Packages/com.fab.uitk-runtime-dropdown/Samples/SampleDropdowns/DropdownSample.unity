@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -104,7 +103,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +116,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -135,6 +134,7 @@ GameObject:
   - component: {fileID: 873290430}
   - component: {fileID: 873290429}
   - component: {fileID: 873290428}
+  - component: {fileID: 873290431}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -149,13 +149,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873290425}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &873290428
 MonoBehaviour:
@@ -173,19 +173,19 @@ MonoBehaviour:
   items:
   - icon: {fileID: 2800000, guid: 59bfc82efab5cc940a00dcabb00b940b, type: 3}
     path: Action A
-    hotkey: Shift + A
+    hotkey: Shift+A
   - icon: {fileID: 2800000, guid: 095275c1eb9a9c84188e6c0dd8895477, type: 3}
     path: Action B
-    hotkey: Shift + B
+    hotkey: Shift+B
   - icon: {fileID: 0}
     path: Sub Menu/Action C
     hotkey: 
   - icon: {fileID: 2800000, guid: ad14c89254809bb49867a213fb057ae9, type: 3}
     path: Sub Menu/Action D
-    hotkey: Alt + D
+    hotkey: Alt+D
   - icon: {fileID: 2800000, guid: a2d4254e5d2356243b67fe532b342983, type: 3}
     path: Action E
-    hotkey: Shift + E
+    hotkey: Shift+E
 --- !u!114 &873290429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +215,22 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 980118f9a941ef5469438088a72e98b6, type: 3}
   m_SortingOrder: 0
+--- !u!114 &873290431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873290425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14294963034859649804c3becefb181b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDoc: {fileID: 873290430}
+  themes:
+  - {fileID: -4733365628477956816, guid: c3956d2b795e0084db836bf21955ac30, type: 3}
+  - {fileID: -4733365628477956816, guid: c388c717c91705649b748bd7a40ab31e, type: 3}
 --- !u!1 &2030006770
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,9 +271,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -291,11 +315,17 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2030006770}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 2030006773}
+  - {fileID: 873290427}

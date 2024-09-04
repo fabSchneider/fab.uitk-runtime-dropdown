@@ -25,7 +25,7 @@ namespace Fab.UITKDropdown.Sample
 
         private void Start()
         {
-            //setup custom menu
+            // setup custom menu
             customMenu = new DropdownMenu();
             for (int i = 0; i < items.Length; i++)
             {
@@ -35,7 +35,7 @@ namespace Fab.UITKDropdown.Sample
 
             var root = uiDoc.rootVisualElement;
 
-            customDropdown = new Dropdown(root, MakeCustomItem, SetCustomItem);
+            customDropdown = new Dropdown(root, makeItem: MakeCustomItem, setItem: SetCustomItem, setMenu: SetCustomMenu);
 
             var customBtn = root.Q<Button>(name: "custom-dropdown-btn");
             customBtn.clickable.clickedWithEventInfo += evt => customDropdown.Open(customMenu, customBtn.worldBound, evt);
@@ -45,6 +45,7 @@ namespace Fab.UITKDropdown.Sample
         {
             Debug.Log(action.name);
         }
+
         private VisualElement MakeCustomItem()
         {
             VisualElement ve = Dropdown.MakeDefaultItem();
@@ -63,9 +64,9 @@ namespace Fab.UITKDropdown.Sample
 
         private void SetCustomItem(VisualElement ve, DropdownMenuItem item, string[] path, int level)
         {
-            Dropdown.SetDefaultItem(ve , item, path, level);
+            Dropdown.SetDefaultItem(ve, item, path, level);
 
-            //don't style sub menu items
+            // don't style sub menu items
             if (path.Length - 1 == level &&
                 item is DropdownMenuAction actionItem && actionItem.userData is CustomDropdownItemData data)
             {
@@ -77,6 +78,17 @@ namespace Fab.UITKDropdown.Sample
                 ve.Q(name: "icon").style.backgroundImage = StyleKeyword.Null;
                 ve.Q<Label>(name: "hotkey-text").text = string.Empty;
             }
+        }
+
+        private void SetCustomMenu(VisualElement menu, string[] path, int level)
+        {
+            Label heading = new Label()
+            {
+                text = level == 0 ? "Root Menu" : path[level - 1]
+            };
+
+            heading.AddToClassList("custom-menu__heading");
+            menu.Insert(0, heading);
         }
     }
 }

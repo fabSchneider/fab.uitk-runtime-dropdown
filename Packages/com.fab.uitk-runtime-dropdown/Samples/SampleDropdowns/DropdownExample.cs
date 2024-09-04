@@ -21,11 +21,14 @@ namespace Fab.UITKDropdown.Sample
         private UIDocument uiDoc;
 
         private DropdownMenu btnMenu;
+        private DropdownMenu emptyMenu;
         private DropdownMenu pointerMenu;
 
         private Dropdown dropdown;
 
         private ExampleOptions options = ExampleOptions.None;
+
+        private bool showHiddenAction;
 
         private void Start()
         {
@@ -33,11 +36,12 @@ namespace Fab.UITKDropdown.Sample
 
             dropdown = new Dropdown(root);
 
-            //setup button menu;
             btnMenu = new DropdownMenu();
             btnMenu.AppendAction("Action 1", DoMenuAction);
             btnMenu.AppendAction("Action 2", DoMenuAction);
             btnMenu.AppendAction("Action 3", DoMenuAction);
+            btnMenu.AppendAction("Show Hidden Action", action => showHiddenAction = !showHiddenAction, action => showHiddenAction ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
+            btnMenu.AppendAction("Hidden/Hidden Action", DoMenuAction, action => showHiddenAction ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Hidden);
             btnMenu.AppendAction("DisabledAction", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
             btnMenu.AppendSeparator();
             btnMenu.AppendAction("Sub Menu/Action 4", DoMenuAction);
@@ -46,28 +50,47 @@ namespace Fab.UITKDropdown.Sample
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 6", DoMenuAction);
             btnMenu.AppendAction("Sub Menu/Another Sub Menu/Action 7", DoMenuAction);
             btnMenu.AppendAction("DisabledSubMenu/Disabled", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
+            btnMenu.AppendAction("DisabledSubMenu/Disabled as well", DoMenuAction, DropdownMenuAction.AlwaysDisabled);
             btnMenu.AppendAction("DisabledSubMenu/Hidden", DoMenuAction, DropdownMenuAction.Status.Hidden);
             btnMenu.AppendAction("Deep/Nested/Menu/That/Would/Annoy/Anyone/Who/Has/To/Click/Through/It/But/Atleast/It/Wraps/Around/Nicely/When/It/Reaches/The/End/Of/The/Screen", DoMenuAction);
 
-            var btn = root.Q<Button>(name: "dropdown-btn");
+            emptyMenu = new DropdownMenu();
+            emptyMenu.AppendAction("Hidden", DoMenuAction, action => DropdownMenuAction.Status.Hidden);
+
+            Button btn = root.Q<Button>(name: "dropdown-btn");
             btn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(btnMenu, btn.worldBound, evt);
 
-            //setup pointer menu;
+
+            Button emptyBtn = root.Q<Button>(name: "empty-dropdown-btn");
+            emptyBtn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(emptyMenu, emptyBtn.worldBound, evt);
+
+            // setup pointer menu;
             pointerMenu = new DropdownMenu();
             pointerMenu.AppendAction("Koala", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Kangaroo", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Platypus", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Wombat", ToggleOption, GetOptionStatus);
 
+            pointerMenu.AppendAction("Test/Sub/Menu/0", null);
+            pointerMenu.AppendAction("Test/Sub/A", null);
+            pointerMenu.AppendAction("Test/Sub/B", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/1", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/2", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/3", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/4", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/5", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/6", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/7", null);
+            pointerMenu.AppendAction("Test/Sub/Menu/8", null);
 
-            root.Q<VisualElement>(name: "dropdown-area").RegisterCallback<PointerDownEvent>(evt =>
+
+            root.Q<VisualElement>(name: "dropdown-area").RegisterCallback<PointerUpEvent>(evt =>
             {
                 if (evt.button == 1)
-                {
                     dropdown.Open(pointerMenu, evt.position, evt);
-                }
             });
         }
+
 
         private void DoMenuAction(DropdownMenuAction action)
         {
