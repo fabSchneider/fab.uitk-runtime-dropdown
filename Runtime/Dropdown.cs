@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Fab.UITKDropdown
 {
@@ -31,9 +32,58 @@ namespace Fab.UITKDropdown
         public static readonly string itemTextClassname = classname + "-menu-item__text";
         public static readonly string itemArrowClassname = classname + "-menu-item__arrow";
 
+
+        #region Focus helper functions
+
+        private static VisualElement FindPreviousFocusableSibling(VisualElement element)
+        {
+            int idx = element.parent.IndexOf(element);
+            int prevIdx = (element.parent.childCount + idx - 1) % element.parent.childCount;
+            while (idx != prevIdx)
+            {
+                VisualElement prevElement = element.parent[prevIdx];
+                if (prevElement.focusable)
+                {
+                    return prevElement;
+                }
+                prevIdx = (element.parent.childCount + prevIdx - 1) % element.parent.childCount;
+            }
+
+            return element;
+        }
+
+        private static VisualElement FindNextFocusableSibling(VisualElement element)
+        {
+            int idx = element.parent.IndexOf(element);
+            int nextIdx = (idx + 1) % element.parent.childCount;
+            while (idx != nextIdx)
+            {
+                VisualElement nextElement = element.parent[nextIdx];
+                if (nextElement.focusable)
+                {
+                    return nextElement;
+                }
+                nextIdx = (nextIdx + 1) % element.parent.childCount;
+            }
+            return element;
+        }
+
+        private static VisualElement FindFirstFocusableChild(VisualElement element)
+        {
+            foreach (VisualElement child in element.Children())
+            {
+                if (child.focusable)
+                    return child;
+            }
+            return null;
+        }
+
+        #endregion
+
+
         private abstract class ItemManipulator : Manipulator
         {
-            protected bool cancel;     
+            protected bool cancel;
             public Menu menu;
 
             protected ItemManipulator() { }
@@ -49,7 +99,7 @@ namespace Fab.UITKDropdown
                 }
             }
 
-            
+
             private bool hidden;
             public bool Hidden
             {
@@ -118,37 +168,13 @@ namespace Fab.UITKDropdown
                         break;
                     case NavigationMoveEvent.Direction.Up:
                     case NavigationMoveEvent.Direction.Previous:
-                        // find previous focusable element
-                        int idx = target.parent.IndexOf(target);
-                        int prevIdx = (target.parent.childCount + idx - 1) % target.parent.childCount;
-                        while (idx != prevIdx)
-                        {
-                            VisualElement prevElement = target.parent[prevIdx];
-                            if (prevElement.focusable)
-                            {
-                                prevElement.Focus();
-                                break;
-                            }
-                            prevIdx = (target.parent.childCount + prevIdx - 1) % target.parent.childCount;
-                        }
+                        FindPreviousFocusableSibling(target).Focus();
                         break;
                     case NavigationMoveEvent.Direction.Right:
                         break;
                     case NavigationMoveEvent.Direction.Down:
                     case NavigationMoveEvent.Direction.Next:
-                        // find next focusable element
-                        idx = target.parent.IndexOf(target);
-                        int nextIdx = (idx + 1) % target.parent.childCount;
-                        while (idx != nextIdx)
-                        {
-                            VisualElement nextElement = target.parent[nextIdx];
-                            if (nextElement.focusable)
-                            {
-                                nextElement.Focus();
-                                break;
-                            }
-                            nextIdx = (nextIdx + 1) % target.parent.childCount;
-                        }
+                        FindNextFocusableSibling(target).Focus();
                         break;
                     default:
                         break;
@@ -282,10 +308,7 @@ namespace Fab.UITKDropdown
                     case NavigationMoveEvent.Direction.Right:
                         ExecuteAction();
                         // select first item of sub menu
-                        if (subMenu.menuContainer.childCount > 0)
-                        {
-                            subMenu.menuContainer[0].Focus();
-                        }
+                        FindFirstFocusableChild(subMenu.menuContainer)?.Focus();
                         break;
                     case NavigationMoveEvent.Direction.Up:
                     case NavigationMoveEvent.Direction.Previous:
@@ -495,7 +518,7 @@ namespace Fab.UITKDropdown
                     subMenu.AddItem(item, path, level + 1);
                 }
             }
-           
+
             public void DetachAll()
             {
                 foreach (var submenu in subMenus.Values)
@@ -503,7 +526,7 @@ namespace Fab.UITKDropdown
 
                 RemoveFromHierarchy();
             }
-            
+
             public DropdownMenuAction.Status SetSubItemStates()
             {
                 bool hasEnabledItems = false;
@@ -627,7 +650,7 @@ namespace Fab.UITKDropdown
         public Dropdown(VisualElement root,
             Func<VisualElement> makeItem = null,
             Action<VisualElement, DropdownMenuItem, string[], int> setItem = null,
-            Func<VisualElement> makeSeparator = null, 
+            Func<VisualElement> makeSeparator = null,
             Action<VisualElement, string[], int> setMenu = null)
         {
             if (root == null)
@@ -760,19 +783,19 @@ namespace Fab.UITKDropdown
                 evt.PreventDefault();
 #endif
 
-                if (rootMenu.menuContainer.childCount > 0)
+                // focus first or last item in the root menu
+                // depending on the direction of the navigation event
+                if (evt.direction == NavigationMoveEvent.Direction.Down)
                 {
-                    // focus first or last item in the root menu
-                    // depending on the direction of the navigation event
-                    if (evt.direction == NavigationMoveEvent.Direction.Down)
-                    {
-                        rootMenu.menuContainer[0].Focus();
-                    }
-                    else if (evt.direction == NavigationMoveEvent.Direction.Up)
-                    {
-                        rootMenu.menuContainer[rootMenu.menuContainer.childCount - 1].Focus();
-                    }
+                    FindFirstFocusableChild(rootMenu.menuContainer)?.Focus();
                 }
+                else if (evt.direction == NavigationMoveEvent.Direction.Up)
+                {
+                    VisualElement first = FindFirstFocusableChild(rootMenu.menuContainer);
+                    if (first != null)
+                        FindPreviousFocusableSibling(first).Focus();
+                }
+
             }, TrickleDown.TrickleDown);
 
             // take away focus from the any dropdown item as the pointer moves out of the menu
@@ -885,7 +908,7 @@ namespace Fab.UITKDropdown
                 SetSubMenuPosition(subMenu, parentWorldPosition + anchor, rootWorldBound);
             }
         }
-       
+
         private ActionItemManipulator MakeActionItem()
         {
             var ve = MakeItem();
