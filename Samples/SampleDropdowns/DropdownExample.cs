@@ -16,7 +16,6 @@ namespace Fab.UITKDropdown.Sample
 
     public class DropdownExample : MonoBehaviour
     {
-
         [SerializeField]
         private UIDocument uiDoc;
 
@@ -71,26 +70,12 @@ namespace Fab.UITKDropdown.Sample
             pointerMenu.AppendAction("Platypus", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Wombat", ToggleOption, GetOptionStatus);
 
-            pointerMenu.AppendAction("Test/Sub/Menu/0", null);
-            pointerMenu.AppendAction("Test/Sub/A", null);
-            pointerMenu.AppendAction("Test/Sub/B", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/1", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/2", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/3", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/4", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/5", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/6", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/7", null);
-            pointerMenu.AppendAction("Test/Sub/Menu/8", null);
-
-
             root.Q<VisualElement>(name: "dropdown-area").RegisterCallback<PointerUpEvent>(evt =>
             {
                 if (evt.button == 1)
                     dropdown.Open(pointerMenu, evt.position, evt);
             });
         }
-
 
         private void DoMenuAction(DropdownMenuAction action)
         {
@@ -122,7 +107,6 @@ namespace Fab.UITKDropdown.Sample
 
             options ^= option;
         }
-
         private DropdownMenuAction.Status GetOptionStatus(DropdownMenuAction action)
         {
             DropdownMenuAction.Status status;
