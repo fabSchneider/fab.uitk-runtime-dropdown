@@ -385,6 +385,11 @@ namespace Fab.UITKDropdown
                 ClearClassList();
                 AddToClassList(menuClassname);
 
+                // clear all elements in the menu
+                Clear();
+                menuContainer.Clear();
+                hierarchy.Add(menuContainer);
+
                 dropdown.subMenuPool.ReturnToPool(this);
             }
 
@@ -476,8 +481,11 @@ namespace Fab.UITKDropdown
                         menuContainer.Add(m.target);
                         subMenus.Add(path[level], subMenu);
                         subItems.Add(m);
+
+                        subMenu.AddToClassList(menuDepthClassname + (level + 1).ToString());
+                        dropdown.SetMenu?.Invoke(subMenu.menuContainer, path, level + 1);
                     }
-                    subMenu.AddToClassList(menuDepthClassname + (level + 1).ToString());
+
                     // add menu to resolve its style
                     Add(subMenu);
 
@@ -494,7 +502,6 @@ namespace Fab.UITKDropdown
 
             public DropdownMenuAction.Status SetSubItemStates()
             {
-
                 bool hasEnabledItems = false;
                 bool hasVisibleItems = false;
                 foreach (var item in actionItems)
@@ -540,7 +547,6 @@ namespace Fab.UITKDropdown
                 if (!hasEnabledItems)
                     return DropdownMenuAction.Status.Disabled;
 
-
                 return DropdownMenuAction.Status.Normal;
             }
         }
@@ -553,6 +559,7 @@ namespace Fab.UITKDropdown
 
         private readonly Func<VisualElement> MakeItem;
         private readonly Action<VisualElement, DropdownMenuItem, string[], int> SetItem;
+        private readonly Action<VisualElement, string[], int> SetMenu;
 
         private ObjectPool<ActionItemManipulator> actionItemPool;
         private ObjectPool<SubItemManipulator> subItemPool;
@@ -608,12 +615,16 @@ namespace Fab.UITKDropdown
         /// </summary>
         /// <param name="root">The root element the drop-down will attach to.</param>
         /// <param name="makeItem">Optional function to customize item appearance.</param>
-        /// <param name="setItem">Optional function to customize how items display their content.</param>
+        /// <param name="setItem">Optional function to customize how items display their content. 
+        /// Passes the path of the corresponding leaf menu item and the level of the current item.</param>
         /// <param name="makeSeparator">Optional function to customize the separator appearance.</param>
+        /// <param name="setMenu">Optional function to customize menu appearances
+        /// Passes the path of the corresponding leaf menu item and the level of the current menu.</param>
         public Dropdown(VisualElement root,
             Func<VisualElement> makeItem = null,
             Action<VisualElement, DropdownMenuItem, string[], int> setItem = null,
-            Func<VisualElement> makeSeparator = null)
+            Func<VisualElement> makeSeparator = null, 
+            Action<VisualElement, string[], int> setMenu = null)
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -624,12 +635,13 @@ namespace Fab.UITKDropdown
 
             MakeItem = makeItem == null ? MakeDefaultItem : makeItem;
             SetItem = setItem == null ? SetDefaultItem : setItem;
+            SetMenu = setMenu;
 
             actionItemPool = new ObjectPool<ActionItemManipulator>(32, true, MakeActionItem, ResetItem);
             subItemPool = new ObjectPool<SubItemManipulator>(32, true, MakeSubItem, ResetItem);
 
             separatorPool = new ObjectPool<VisualElement>(32, true, makeSeparator == null ? MakeDefaultSeparator : makeSeparator);
-            subMenuPool = new ObjectPool<Menu>(16, true, MakeMenu);
+            subMenuPool = new ObjectPool<Menu>(16, true, () => new Menu(this));
         }
 
         /// <summary>
@@ -770,6 +782,8 @@ namespace Fab.UITKDropdown
             rootMenu.AddToClassList(menuDepthClassname + "0");
             rootMenu.schedule.Execute(() => rootMenu.AddToClassList(menuOpenClassname)).ExecuteLater(10);
 
+            SetMenu?.Invoke(rootMenu.menuContainer, Array.Empty<string>(), 0);
+
             dropdownLayer.Add(rootMenu);
             foreach (var item in menu.MenuItems())
             {
@@ -863,12 +877,7 @@ namespace Fab.UITKDropdown
                 SetSubMenuPosition(subMenu, parentWorldPosition + anchor, rootWorldBound);
             }
         }
-        
-        private Menu MakeMenu()
-        {
-            return new Menu(this);
-        }
-
+       
         private ActionItemManipulator MakeActionItem()
         {
             var ve = MakeItem();
