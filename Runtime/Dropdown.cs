@@ -101,7 +101,11 @@ namespace Fab.UITKDropdown
             {
                 // prevent default focus behavior
                 evt.StopPropagation();
+#if UNITY_2023_2_OR_NEWER
+                menu.focusController.IgnoreEvent(evt);
+#else
                 evt.PreventDefault();
+#endif
 
                 switch (evt.direction)
                 {
@@ -750,7 +754,11 @@ namespace Fab.UITKDropdown
 
                 // prevent default focusing behavior
                 evt.StopPropagation();
+#if UNITY_2023_2_OR_NEWER
+                rootMenu.focusController.IgnoreEvent(evt);
+#else
                 evt.PreventDefault();
+#endif
 
                 if (rootMenu.menuContainer.childCount > 0)
                 {
