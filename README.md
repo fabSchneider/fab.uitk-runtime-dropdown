@@ -19,15 +19,15 @@ New features:
 For all changes checkout the [changelog](/CHANGELOG.md).
 
 
-<img src="Documentation~/SimpleDropdown.gif" object-fit="contain" width="66%"/>
+<img src="Packages/com.fab.uitk-runtime-dropdown/Documentation~/SimpleDropdown.gif" object-fit="contain" width="66%"/>
 
 Dropdown menus wrap around when they reach the end of the screen.
 
-<img src="Documentation~/ContextDropdown.gif" object-fit="contain" width="66%"/>
+<img src="Packages/com.fab.uitk-runtime-dropdown/Documentation~/ContextDropdown.gif" object-fit="contain" width="66%"/>
 
 Context menus outside the screen area align to the border of the screen.
 
-<img src="Documentation~/CustomDropdown.gif" object-fit="contain" width="66%"/>
+<img src="Packages/com.fab.uitk-runtime-dropdown/Documentation~/CustomDropdown.gif" object-fit="contain" width="66%"/>
 
 Dropdown menus can be customized through code and USS. Keyboard and Gamepad navigation is fully supported.
 
