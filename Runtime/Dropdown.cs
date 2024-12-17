@@ -32,6 +32,7 @@ namespace Fab.UITKDropdown
         public static readonly string itemTextClassname = classname + "-menu-item__text";
         public static readonly string itemArrowClassname = classname + "-menu-item__arrow";
 
+        private static readonly string targetOpenClassname = "fab-dropdown-target--open";
 
         #region Focus helper functions
 
@@ -671,6 +672,9 @@ namespace Fab.UITKDropdown
             subMenuPool = new ObjectPool<Menu>(16, true, () => new Menu(this));
         }
 
+        private VisualElement targetElement;
+
+
         /// <summary>
         /// Opens the drop-down anchored to the bottom border of the target world bounds.
         /// </summary>
@@ -684,6 +688,13 @@ namespace Fab.UITKDropdown
 
             targetRect = targetWorldBound;
 
+            if (evt != null)
+            {
+                targetElement = evt.target as VisualElement;
+                targetElement?.AddToClassList(targetOpenClassname);
+
+            }
+
             // Dropdown menu only supports Mouse Events
             // In case the incoming event is a pointer event we need to
             // synthesize a new mouse event from the pointer event
@@ -694,7 +705,7 @@ namespace Fab.UITKDropdown
             }
             else if (evt == null)
             {
-                using var mouseEvt = MouseDownEvent.GetPooled(targetWorldBound.position, 0, 1, Vector2.zero);
+                using var mouseEvt = MouseDownEvent.GetPooled(targetRect.position, 0, 1, Vector2.zero);
                 menu.PrepareForDisplay(mouseEvt);
             }
             else
@@ -711,6 +722,25 @@ namespace Fab.UITKDropdown
             // otherwise focusing of the blocking layer does not work reliably
             root.focusController.focusedElement?.Blur();
             dropdownLayer.Focus();
+        }
+
+        /// <summary>
+        /// Opens the drop-down anchored to the bottom border of the target world bounds.
+        /// </summary>
+        public void Open(DropdownMenu menu, EventBase evt)
+        {
+            Rect worldBound = default;
+
+            if (evt != null)
+            {
+                VisualElement targetElement = evt.target as VisualElement;
+                if (targetElement != null)
+                {
+                    worldBound = targetElement.worldBound;
+                }
+            }
+
+            Open(menu, worldBound, evt);
         }
 
         /// <summary>
@@ -731,6 +761,9 @@ namespace Fab.UITKDropdown
                 rootMenu.CloseSubMenus();
             }
             dropdownLayer.RemoveFromHierarchy();
+
+            targetElement?.RemoveFromClassList(targetOpenClassname);
+            targetElement = null;
         }
 
         private void SetupDropdownLayer()

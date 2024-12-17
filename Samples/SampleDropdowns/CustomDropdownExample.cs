@@ -38,7 +38,14 @@ namespace Fab.UITKDropdown.Sample
             customDropdown = new Dropdown(root, makeItem: MakeCustomItem, setItem: SetCustomItem, setMenu: SetCustomMenu);
 
             var customBtn = root.Q<Button>(name: "custom-dropdown-btn");
-            customBtn.clickable.clickedWithEventInfo += evt => customDropdown.Open(customMenu, customBtn.worldBound, evt);
+
+            customBtn.clickable.clickedWithEventInfo += evt =>
+            {
+                Rect worldBound = ((VisualElement)evt.target).worldBound;
+                worldBound.x = worldBound.x - 42;
+                worldBound.y = worldBound.y + 8;
+                customDropdown.Open(customMenu, worldBound, evt);
+            };
         }
 
         private void DoMenuAction(DropdownMenuAction action)

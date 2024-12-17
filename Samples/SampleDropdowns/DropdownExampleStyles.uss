@@ -1,6 +1,7 @@
 :root {
     --fab-dropdown-sample-text-color: rgb(12, 12, 12);
     --fab-dropdown-sample-button-color: rgb(188, 188, 188);
+    --fab-dropdown-sample-button-open-color: rgb(220, 220, 220);
     --fab-dropdown-sample-button-color-hover: rgb(200, 200, 200);
     --fab-dropdown-sample-button-color-active: rgb(220, 220, 220);
     --fab-dropdown-sample-button-border-color: rgb(64, 64, 64);
@@ -34,18 +35,22 @@
     border-width: 1px;
 }
 
-.unity-button.toolbar__button {
+.toolbar__button {
     background-color: var(--fab-dropdown-sample-button-color);
     margin: 0;
     border-width: 0;
 }
 
-.unity-button.toolbar__button:hover {
+.toolbar__button:hover:enabled {
     background-color: var(--fab-dropdown-sample-button-color-hover);
 }
 
-.unity-button.toolbar__button:active {
+.toolbar__button:active:enabled {
     background-color: var(--fab-dropdown-sample-button-color-active);
+}
+
+.toolbar__button.fab-dropdown-target--open{
+    background-color: var(--fab-dropdown-sample-button-open-color);
 }
 
 .toolbar__divider {

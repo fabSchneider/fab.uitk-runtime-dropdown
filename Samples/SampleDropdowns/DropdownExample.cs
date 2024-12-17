@@ -59,11 +59,11 @@ namespace Fab.UITKDropdown.Sample
             emptyMenu.AppendAction("Hidden", DoMenuAction, action => DropdownMenuAction.Status.Hidden);
 
             Button btn = root.Q<Button>(name: "dropdown-btn");
-            btn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(btnMenu, btn.worldBound, evt);
+            btn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(btnMenu, evt);
 
 
             Button emptyBtn = root.Q<Button>(name: "empty-dropdown-btn");
-            emptyBtn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(emptyMenu, emptyBtn.worldBound, evt);
+            emptyBtn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(emptyMenu, evt);
 
             // setup pointer menu;
             pointerMenu = new DropdownMenu();
