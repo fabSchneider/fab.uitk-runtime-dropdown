@@ -779,64 +779,70 @@ namespace Fab.UITKDropdown
             dropdownLayer.AddToClassList(classname);
 
             // closing when the pointer is down outside of any menu
-            dropdownLayer.RegisterCallback<PointerDownEvent>(evt =>
-            {
-
-                if (evt.target == dropdownLayer)
-                {
-                    Close();
-
-                    // resend the pointer event to pass it through the blocking layer to elements underneath
-                    using (PointerDownEvent pointerDownEvent = PointerDownEvent.GetPooled(evt))
-                    {
-                        root.panel.visualTree.SendEvent(pointerDownEvent);
-                    }
-                }
-            });
+            dropdownLayer.RegisterCallback<PointerDownEvent>(OnDropdownLayerPointerDown);
 
             // default closing behavior when pressing the navigation cancel event
-            dropdownLayer.RegisterCallback<NavigationCancelEvent>(evt =>
-            {
-                Close();
-            }, TrickleDown.TrickleDown);
+            dropdownLayer.RegisterCallback<NavigationCancelEvent>(OnDropdownLayerNavigationCancel, TrickleDown.TrickleDown);
 
             // override default focus behavior
             // if no item is focused using up or down navigation will 
             // focus the first or last item in the root menu
-            dropdownLayer.RegisterCallback<NavigationMoveEvent>(evt =>
-            {
-                if (evt.target != dropdownLayer)
-                    return;
+            dropdownLayer.RegisterCallback<NavigationMoveEvent>(OnDropdownLayerNavigationMove, TrickleDown.TrickleDown);
 
-                // prevent default focusing behavior
-                evt.StopPropagation();
+            // take away focus from the any dropdown item as the pointer moves out of the menu
+            dropdownLayer.RegisterCallback<PointerOverEvent>(OnDropdownLayerPointerOver);
+        }
+
+        private void OnDropdownLayerPointerDown(PointerDownEvent evt)
+        {
+            if (evt.target == dropdownLayer)
+            {
+                Close();
+                // resend the pointer event to pass it through the blocking layer to elements underneath
+                using (PointerDownEvent pointerDownEvent = PointerDownEvent.GetPooled(evt))
+                {
+                    root.panel.visualTree.SendEvent(pointerDownEvent);
+                }
+            }
+        }
+
+        private void OnDropdownLayerPointerOver(PointerOverEvent evt)
+        {
+            if (evt.target == dropdownLayer)
+                dropdownLayer.Focus();
+        }
+
+        private void OnDropdownLayerNavigationCancel(NavigationCancelEvent evt)
+        {
+            Close();
+        }
+
+        private void OnDropdownLayerNavigationMove(NavigationMoveEvent evt)
+        {
+            if (evt.target != dropdownLayer)
+                return;
+
+            // prevent default focusing behavior
+            evt.StopPropagation();
 #if UNITY_2023_2_OR_NEWER
                 rootMenu.focusController.IgnoreEvent(evt);
 #else
-                evt.PreventDefault();
+            evt.PreventDefault();
 #endif
 
-                // focus first or last item in the root menu
-                // depending on the direction of the navigation event
-                if (evt.direction == NavigationMoveEvent.Direction.Down)
-                {
-                    FindFirstFocusableChild(rootMenu.menuContainer)?.Focus();
-                }
-                else if (evt.direction == NavigationMoveEvent.Direction.Up)
-                {
-                    VisualElement first = FindFirstFocusableChild(rootMenu.menuContainer);
-                    if (first != null)
-                        FindPreviousFocusableSibling(first).Focus();
-                }
-
-            }, TrickleDown.TrickleDown);
-
-            // take away focus from the any dropdown item as the pointer moves out of the menu
-            dropdownLayer.RegisterCallback<PointerOverEvent>(evt =>
+            // focus first or last item in the root menu
+            // depending on the direction of the navigation event
+            if (evt.direction == NavigationMoveEvent.Direction.Down)
             {
-                if (evt.target == dropdownLayer)
-                    dropdownLayer.Focus();
-            });
+                FindFirstFocusableChild(rootMenu.menuContainer)?.Focus();
+            }
+            else if (evt.direction == NavigationMoveEvent.Direction.Up)
+            {
+                VisualElement first = FindFirstFocusableChild(rootMenu.menuContainer);
+                if (first != null)
+                    FindPreviousFocusableSibling(first).Focus();
+            }
+
         }
 
         private void Build(DropdownMenu menu)
