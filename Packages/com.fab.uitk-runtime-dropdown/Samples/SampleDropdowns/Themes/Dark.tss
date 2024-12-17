@@ -6,6 +6,7 @@
 :root{
     --fab-dropdown-sample-text-color: rgb(180, 180, 180);
     --fab-dropdown-sample-button-color:  rgb(48, 48, 48);
+    --fab-dropdown-sample-button-open-color: rgb(64, 64, 64);
     --fab-dropdown-sample-button-color-hover:  rgb(54, 54, 54);
     --fab-dropdown-sample-button-color-active:  rgb(64, 64, 64);
     --fab-dropdown-sample-button-border-color: rgb(68, 68, 68);
@@ -17,8 +18,8 @@
     --fab-dropdown-menu-padding: 4px;
     --fab-dropdown-menu-border-radius: 6px;
 
-    --fab-dropdown-menu-bkg-color: var(--fab-dropdown-sample-button-color);
-    --fab-dropdown-menu-border-color: var( --fab-dropdown-sample-button-border-color);
+    --fab-dropdown-menu-bkg-color: var(--fab-dropdown-sample-button-open-color);
+    --fab-dropdown-menu-border-color: rgb(80, 80, 80);
 
     --fab-dropdown-separator-color: rgba(255, 255, 255, 0.1);
 
