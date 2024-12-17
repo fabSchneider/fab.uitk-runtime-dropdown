@@ -19,7 +19,7 @@
     bottom: 0;
     align-items: center;
     justify-content: center;
-    background-image: url("project://database/Packages/com.fab.uitk-runtime-dropdown/Samples/SampleDropdowns/background.jpg?fileID=2800000&guid=ae662fded5be07b4f90684774a052654&type=3#background");
+    background-image: url("./background.jpg");
     -unity-background-scale-mode: scale-and-crop;
 }
 
