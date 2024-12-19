@@ -8,9 +8,9 @@
     --fab-dropdown-menu-min-height: 20px;
     --fab-dropdown-menu-bkg-color: rgb(220, 220, 220);
     --fab-dropdown-menu-border-color: rgb(190, 190, 190);
-    --fab-dropdown-checkmark: url("./UI/Icons/checkmark.png");
+    --fab-dropdown-checkmark: url("./Icons/checkmark.png");
     --fab-dropdown-checkmark-color: rgb(111, 111, 111);
-    --fab-dropdown-arrow: url("./UI/Icons/arrow-right.png");
+    --fab-dropdown-arrow: url("./Icons/arrow-right.png");
     --fab-dropdown-arrow-color: rgb(111, 111, 111);
     --fab-dropdown-separator-color: rgba(0, 0, 0, 0.1);
     --fab-dropdown-item-focus-color: rgba(0, 182, 217, 0.24);
