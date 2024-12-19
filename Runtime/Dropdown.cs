@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Fab.UITKDropdown
 {
@@ -80,7 +79,6 @@ namespace Fab.UITKDropdown
         }
 
         #endregion
-
 
         private abstract class ItemManipulator : Manipulator
         {
@@ -583,6 +581,7 @@ namespace Fab.UITKDropdown
         private VisualElement dropdownLayer;
         private Menu rootMenu;
 
+        private VisualElement targetElement;
         private Rect targetRect;
 
         private readonly Func<VisualElement> MakeItem;
@@ -671,9 +670,6 @@ namespace Fab.UITKDropdown
             separatorPool = new ObjectPool<VisualElement>(32, true, makeSeparator == null ? MakeDefaultSeparator : makeSeparator);
             subMenuPool = new ObjectPool<Menu>(16, true, () => new Menu(this));
         }
-
-        private VisualElement targetElement;
-
 
         /// <summary>
         /// Opens the drop-down anchored to the bottom border of the target world bounds.

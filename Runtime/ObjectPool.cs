@@ -32,7 +32,7 @@ namespace Fab.UITKDropdown
         public int Available => pooled.Count;
 
         protected bool autoExpand;
-        
+
         /// <summary>
         /// If true the pool automatically adds new object when it runs out
         /// </summary>
@@ -42,7 +42,7 @@ namespace Fab.UITKDropdown
 
         protected Action<T> resetInstance;
 
-        protected ObjectPool(){}
+        protected ObjectPool() { }
 
         /// <summary>
         /// Constructor
