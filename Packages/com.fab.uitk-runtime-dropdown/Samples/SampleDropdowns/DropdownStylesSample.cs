@@ -29,8 +29,8 @@ namespace Fab.UITKDropdown.Sample
             for (int i = 0; i < themes.Length; i++)
             {
                 ThemeStyleSheet theme = themes[i];
-                menu.AppendAction(theme.name, 
-                    action => uiDoc.panelSettings.themeStyleSheet = theme, 
+                menu.AppendAction(theme.name,
+                    action => uiDoc.panelSettings.themeStyleSheet = theme,
                     action => uiDoc.panelSettings.themeStyleSheet == theme ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
             }
 
