@@ -3,7 +3,7 @@
     --fab-dropdown-menu-padding: 4px;
     --fab-dropdown-menu-vertical-offset: -4px;
     --fab-dropdown-menu-horizontal-offset: 2px;
-    --fab-dropdown-menu-border-radius: 6px;
+    --fab-dropdown-menu-border-radius: 0px;
     --fab-dropdown-menu-min-width: 128px;
     --fab-dropdown-menu-min-height: 20px;
     --fab-dropdown-menu-bkg-color: rgb(220, 220, 220);
