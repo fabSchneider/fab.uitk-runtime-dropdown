@@ -9,7 +9,7 @@ The dropdown's VisualElements are pooled to keep allocations to a minimum.
 
 *Compatible with Unity Version 2022.3 and higher.*
 
-## Version 1.1 
+## Version 1.2
 New features:
 - Better auto alignment to fit menus on the screen
 - More advanced customization and styling options

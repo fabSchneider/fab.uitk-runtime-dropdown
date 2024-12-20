@@ -1,6 +1,6 @@
 {
   "name": "com.fab.uitk-runtime-dropdown",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "displayName": "UITK Runtime Dropdown",
   "description": "A versatile, runtime compatible dropdown for Unity's UI Toolkit. \nThis package covers a multitude of use case such as toolbar dropdowns, context menus and enum dropdowns.",
   "keywords": [

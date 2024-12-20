@@ -4,6 +4,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2024-12-20
+### Added
+- Dropdowns opened with an `EventBase` argument will now add `.fab-dropdown-target--open` USS class to the events target.
+- The blocking behavior of pointer interaction outside an opened dropdown can now be configured through the dedicated `BlockingLayer` element.
+### Changed
+- Default menu border radius is now 0.
+### Fixed
+- Fix USS icon path not working in samples.
+
 ## [1.1.0] - 2024-09-04
 ### Added
 - Dropdown menus are now auto positioning to fit the screen.
@@ -30,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix deprecated call to `PropagationPhase.AtTarget`. 
 - Fix menu item stays highlighted when submenu is open.
 
-[Unreleased]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.2.0
 [1.1.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.1.0
 [1.0.1]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.0.1
