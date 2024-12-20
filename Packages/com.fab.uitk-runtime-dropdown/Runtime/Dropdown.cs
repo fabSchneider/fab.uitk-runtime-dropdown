@@ -33,53 +33,6 @@ namespace Fab.UITKDropdown
 
         private static readonly string targetOpenClassname = "fab-dropdown-target--open";
 
-        #region Focus helper functions
-
-        private static VisualElement FindPreviousFocusableSibling(VisualElement element)
-        {
-            int idx = element.parent.IndexOf(element);
-            int prevIdx = (element.parent.childCount + idx - 1) % element.parent.childCount;
-            while (idx != prevIdx)
-            {
-                VisualElement prevElement = element.parent[prevIdx];
-                if (prevElement.focusable)
-                {
-                    return prevElement;
-                }
-                prevIdx = (element.parent.childCount + prevIdx - 1) % element.parent.childCount;
-            }
-
-            return element;
-        }
-
-        private static VisualElement FindNextFocusableSibling(VisualElement element)
-        {
-            int idx = element.parent.IndexOf(element);
-            int nextIdx = (idx + 1) % element.parent.childCount;
-            while (idx != nextIdx)
-            {
-                VisualElement nextElement = element.parent[nextIdx];
-                if (nextElement.focusable)
-                {
-                    return nextElement;
-                }
-                nextIdx = (nextIdx + 1) % element.parent.childCount;
-            }
-            return element;
-        }
-
-        private static VisualElement FindFirstFocusableChild(VisualElement element)
-        {
-            foreach (VisualElement child in element.Children())
-            {
-                if (child.focusable)
-                    return child;
-            }
-            return null;
-        }
-
-        #endregion
-
         private abstract class ItemManipulator : Manipulator
         {
             protected bool cancel;
@@ -167,13 +120,13 @@ namespace Fab.UITKDropdown
                         break;
                     case NavigationMoveEvent.Direction.Up:
                     case NavigationMoveEvent.Direction.Previous:
-                        FindPreviousFocusableSibling(target).Focus();
+                        FocusUtils.FindPreviousFocusableSibling(target).Focus();
                         break;
                     case NavigationMoveEvent.Direction.Right:
                         break;
                     case NavigationMoveEvent.Direction.Down:
                     case NavigationMoveEvent.Direction.Next:
-                        FindNextFocusableSibling(target).Focus();
+                        FocusUtils.FindNextFocusableSibling(target).Focus();
                         break;
                     default:
                         break;
@@ -307,7 +260,7 @@ namespace Fab.UITKDropdown
                     case NavigationMoveEvent.Direction.Right:
                         ExecuteAction();
                         // select first item of sub menu
-                        FindFirstFocusableChild(subMenu.menuContainer)?.Focus();
+                        FocusUtils.FindFirstFocusableChild(subMenu.menuContainer)?.Focus();
                         break;
                     case NavigationMoveEvent.Direction.Up:
                     case NavigationMoveEvent.Direction.Previous:
