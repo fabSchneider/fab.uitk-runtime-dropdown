@@ -65,7 +65,7 @@ namespace Fab.UITKDropdown.Sample
             Button emptyBtn = root.Q<Button>(name: "empty-dropdown-btn");
             emptyBtn.clickable.clickedWithEventInfo += (evt) => dropdown.Open(emptyMenu, evt);
 
-            // setup pointer menu;
+            // setup pointer menu
             pointerMenu = new DropdownMenu();
             pointerMenu.AppendAction("Koala", ToggleOption, GetOptionStatus);
             pointerMenu.AppendAction("Kangaroo", ToggleOption, GetOptionStatus);
