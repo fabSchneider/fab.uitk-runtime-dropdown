@@ -6,12 +6,11 @@ namespace Fab.UITKDropdown
     [Flags]
     public enum BlockingBehavior
     {
-        None = 0,
+        Default = 0,
         PickThrough = 1,
         CloseOnClick = 2,
         CloseOnCancel = 4,
-        Closeable = CloseOnClick | CloseOnCancel,
-        All = PickThrough | CloseOnClick | CloseOnCancel
+        Closeable = CloseOnClick | CloseOnCancel
     }
 
     public class BlockingLayer : VisualElement
@@ -59,8 +58,22 @@ namespace Fab.UITKDropdown
             }
         }
 
+        private Action<BlockingLayer> m_closeHandler;
+
+        public Action<BlockingLayer> closeHandler
+        {
+            set
+            {
+                if (value == null)
+                    m_closeHandler = DefaultCloseHandler;
+                else
+                    m_closeHandler = value;
+            }
+        }
+
         public BlockingLayer()
         {
+            m_closeHandler = DefaultCloseHandler;
             focusable = true;
             //set tab index to -1 to avoid blocking layer
             // being picked by the focus ring
@@ -172,14 +185,14 @@ namespace Fab.UITKDropdown
                 if (pick == null)
                 {
                     // nothing has been picked, close the layer
-                    RemoveFromHierarchy();
+                    m_closeHandler.Invoke(this);
                 }
                 else
                 {
                     // close the layer if the picked element is below it
                     if (FocusUtils.GetRelativeOrderInVisualTree(pick, this) < 1)
                     {
-                        RemoveFromHierarchy();
+                        m_closeHandler.Invoke(this);
                     }
                 }
             }
@@ -192,7 +205,7 @@ namespace Fab.UITKDropdown
                 IPanel panel = this.panel;
 
                 if (closeOnClick)
-                    RemoveFromHierarchy();
+                    m_closeHandler.Invoke(this);
 
                 if (!pickThrough)
                 {
@@ -213,7 +226,12 @@ namespace Fab.UITKDropdown
         }
         private void CloseOnNavigationCancel(NavigationCancelEvent evt)
         {
-            RemoveFromHierarchy();
+            m_closeHandler.Invoke(this);
+        }
+
+        private static void DefaultCloseHandler(BlockingLayer blockingLayer)
+        {
+            blockingLayer.RemoveFromHierarchy();
         }
     }
 }
