@@ -4,6 +4,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-03-31
+### Added
+- Dropdown items now clear all potentially bindings before being returned to the pool (only Unity 2023.2 and later).
+### Changed
+- Sub menus are now calculating their position on demand, allowing for changes of any menu's size to be correctly reflected in its positioning.
+- BlockingBehavior `None` has been renamed to `Default`.
+### Removed
+- BlockingBehavior `All` has been removed.
+
 ## [1.2.0] - 2024-12-20
 ### Added
 - Dropdowns opened with an `EventBase` argument will now add `.fab-dropdown-target--open` USS class to the events target.
@@ -39,7 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix deprecated call to `PropagationPhase.AtTarget`. 
 - Fix menu item stays highlighted when submenu is open.
 
-[Unreleased]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.3.0
 [1.2.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.2.0
 [1.1.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.1.0
 [1.0.1]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.0.1
