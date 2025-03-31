@@ -4,6 +4,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2025-03-31
+### Fixed
+- Fix root menu position not set correctly when displayed for the first time
+
 ## [1.3.0] - 2025-03-31
 ### Added
 - Dropdown items now clear all potentially bindings before being returned to the pool (only Unity 2023.2 and later).
@@ -48,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix deprecated call to `PropagationPhase.AtTarget`. 
 - Fix menu item stays highlighted when submenu is open.
 
-[Unreleased]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.3.1
 [1.3.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.3.0
 [1.2.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.2.0
 [1.1.0]: https://github.com/fabSchneider/fab.uitk-runtime-dropdown/releases/tag/v1.1.0
