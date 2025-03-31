@@ -719,7 +719,7 @@ namespace Fab.UITKDropdown
 
             Build(menu);
             root.Add(blockingLayer);
-            SetRootMenuPosition();
+
 
 
 #if UNITY_2023_1_OR_NEWER
@@ -727,7 +727,11 @@ namespace Fab.UITKDropdown
             SetRootMenuOpenStyleNextFrame();
 #else
             // wait a few milliseconds to add menu open style for fade in transition styles to work
-            rootMenu.schedule.Execute(() => rootMenu.AddToClassList(menuOpenClassname)).ExecuteLater(10);
+            rootMenu.schedule.Execute(() =>
+            {
+                SetRootMenuPosition();
+                rootMenu.AddToClassList(menuOpenClassname);
+            }).ExecuteLater(10);
 #endif
         }
 
@@ -735,6 +739,7 @@ namespace Fab.UITKDropdown
         private async void SetRootMenuOpenStyleNextFrame()
         {
             await Awaitable.NextFrameAsync();
+            SetRootMenuPosition();
             rootMenu.AddToClassList(menuOpenClassname);
         }
 #endif
