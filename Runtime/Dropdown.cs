@@ -856,6 +856,18 @@ namespace Fab.UITKDropdown
             target.RemoveFromClassList(disabledItemClassname);
 
             target.RemoveFromClassList(openedItemClassname);
+
+            // Clear any bindings that might have been added to the element or its children (only from Unity Version 2023.2 or newer
+            ClearBindingsRecursively(target);
+        }
+
+        private void ClearBindingsRecursively(VisualElement element)
+        {
+#if UNITY_2023_2_OR_NEWER
+            element.ClearBindings();
+            foreach (VisualElement child in element.Children())
+                ClearBindingsRecursively(child);
+#endif
         }
 
         private void SetItemStatus(VisualElement ve, DropdownMenuAction.Status status)
