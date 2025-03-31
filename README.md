@@ -9,6 +9,10 @@ The dropdown's VisualElements are pooled to keep allocations to a minimum.
 
 *Compatible with Unity Version 2022.3 and higher.*
 
+## How to install
+
+You can install this package through Unity's package manager. Choose `Install package from git url...` from the `+` button and add following url: `https://github.com/fabSchneider/fab.uitk-runtime-dropdown.git#upm`
+
 ## Version 1.1 
 New features:
 - Better auto alignment to fit menus on the screen
