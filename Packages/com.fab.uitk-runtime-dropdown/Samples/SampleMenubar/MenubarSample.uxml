@@ -1,0 +1,9 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement name="menubar" class="menubar" style="flex-direction: row;">
+        <engine:Button text="File" name="file-button" class="menubar__button" />
+        <engine:Button text="Edit" name="edit-button" class="menubar__button" />
+        <engine:VisualElement class="menubar__spacer" />
+        <engine:Button text="+" name="add-button" class="menubar__button" />
+    </engine:VisualElement>
+    <engine:VisualElement name="view" style="flex-grow: 1;" />
+</engine:UXML>

@@ -1,0 +1,31 @@
+.menubar {
+    background-color: rgb(255, 255, 255);
+    flex-direction: row;
+}
+
+.menubar__spacer {
+    flex-grow: 1;
+}
+
+.menubar__button {
+    margin: 0px;
+    padding: 2px 6px 2px 6px;
+    border-color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.menubar__button:enabled:hover, 
+.menubar__button:enabled:hover:active {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.menubar__button:enabled:focus {
+   border-color: rgb(32, 94, 164);
+}
+
+.menubar__button--opened,
+.menubar__button--opened:enabled:hover,
+.menubar__button--opened:enabled:hover:active{
+   background-color: rgba(32, 94, 164, 0.4);
+}
